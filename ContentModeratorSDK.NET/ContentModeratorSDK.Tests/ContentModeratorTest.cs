@@ -183,5 +183,20 @@ namespace ContentModeratorSDK.Tests
             var deleteResult = deleteTask.Result;
             Assert.IsTrue(deleteResult != null, "Expected valid result for DeleteTerm");
         }
+
+        /// <summary>
+        /// Identify the language of a text
+        /// </summary>
+        [TestMethod]
+        public void IdentifyLanguageTest()
+        {
+            IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
+
+            TextModeratableContent textContent = new TextModeratableContent("Hola este es un texto en otro idioma");
+            var identifyLanguageResponse = moderatorService.IdentifyLanguageAsync(textContent);
+            var actualResult = identifyLanguageResponse.Result;
+            Assert.IsTrue(actualResult != null, "Expected valid result");
+            Assert.AreEqual("spa", actualResult.DetectedLanguage, "Expected valid result");
+        }
     }
 }

@@ -77,5 +77,12 @@ namespace ContentModeratorSDK
         Task<RemoveTermResult> RemoveTermAsync(TextModeratableContent textContent, string language);
 
         Task<ImportTermListResult> ImportTermListAsync(string language);
+
+        /// <summary>
+        /// Identify the language of the provided text
+        /// </summary>
+        /// <param name="textContent"></param>
+        /// <returns>Identified language</returns>
+        Task<IdentifyLanguageResult> IdentifyLanguageAsync(TextModeratableContent textContent);
     }
 }

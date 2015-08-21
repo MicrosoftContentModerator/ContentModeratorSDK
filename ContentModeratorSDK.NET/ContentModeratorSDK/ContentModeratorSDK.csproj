@@ -52,6 +52,8 @@
     <Compile Include="IContentModerator.cs" />
     <Compile Include="Image\ImageContentModerator.cs" />
     <Compile Include="Image\ImageModeratableContent.cs" />
+    <Compile Include="Service\Requests\IdentifyLanguageRequest.cs" />
+    <Compile Include="Service\Results\IdentifyLanguageResult.cs" />
     <Compile Include="Service\Results\ImportTermListResult.cs" />
     <Compile Include="Service\Results\RemoveTermResult.cs" />
     <Compile Include="Service\Results\TextRefreshIndexResult.cs" />

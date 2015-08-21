@@ -154,6 +154,26 @@ namespace ContentModeratorSDK.Service
             }
         }
 
+        public async Task<IdentifyLanguageResult> IdentifyLanguageAsync(TextModeratableContent textContent)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+
+                string urlPath = $"{this.options.TextServicePath}{$"/Language/Identify"}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.TextServiceKey);
+
+                IdentifyLanguageRequest request = new IdentifyLanguageRequest(textContent);
+                message.Content = new StringContent(
+                    JsonConvert.SerializeObject(request),
+                    Encoding.UTF8,
+                    "application/json");
+                return await this.SendRequest<IdentifyLanguageResult>(client, message);
+            }
+        }
+
         /// <summary>
         /// Add an image into the Image list
         /// </summary>

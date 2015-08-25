@@ -18,10 +18,5 @@ namespace ContentModeratorSDK.Service.Results
         /// Array of name value pairs wit specific information about evaluate
         /// </summary>
         public AdvancedInfo[] advancedInfo;
-
-        /// <summary>
-        /// Evaluate result. Indicates whether the image was positive for a policy violation.
-        /// </summary>
-        public bool Result;
     }
 }

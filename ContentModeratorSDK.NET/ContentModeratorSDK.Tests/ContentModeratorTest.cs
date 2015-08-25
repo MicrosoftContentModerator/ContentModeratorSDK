@@ -62,7 +62,6 @@ namespace ContentModeratorSDK.Tests
             var actualResult = moderateResult.Result;
             Assert.IsTrue(actualResult != null, "Expected valid result");
             Assert.IsTrue(actualResult.advancedInfo != null, "Expected valid result");
-            Assert.IsFalse(actualResult.Result, "The test image should not be a match");
 
             var score = actualResult.advancedInfo.First(x => string.Equals(x.Key, "score", StringComparison.OrdinalIgnoreCase));
             Assert.AreEqual("0.000", score.Value, "score value");
@@ -83,7 +82,6 @@ namespace ContentModeratorSDK.Tests
                 var actualResult = moderateResult.Result;
                 Assert.IsTrue(actualResult != null, "Expected valid result");
                 Assert.IsTrue(actualResult.advancedInfo != null, "Expected valid result");
-                Assert.IsFalse(actualResult.Result, "The test image should not be a match");
 
                 var score =
                     actualResult.advancedInfo.First(

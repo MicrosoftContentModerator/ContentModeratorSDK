@@ -19,8 +19,8 @@ namespace ContentModeratorSDK.Tests
     [TestClass]
     public class ContentModeratorSDKTest
     {
-        private const string TestImageUrl =
-            "http://c.s-microsoft.com/en-us/CMSImages/hero.jpg?version=e5df080c-643c-6e0a-d7ec-ac3e1a093add";
+        private const string TestImageUrl = "https://cdn.schedulicity.com/usercontent/b9de6e06-e954-4169-ac44-57fa1c3b4245.jpg";
+            //"http://c.s-microsoft.com/en-us/CMSImages/hero.jpg?version=e5df080c-643c-6e0a-d7ec-ac3e1a093add";
 
         public const string TestImageContent = @"Content\test.jpg";
 
@@ -84,15 +84,8 @@ namespace ContentModeratorSDK.Tests
             Assert.IsTrue(actualResult != null, "Expected valid result");
             Assert.IsTrue(actualResult.advancedInfo != null, "Expected valid result");
 
-            if (actualResult.IsImageAdultClassified)
-            {
-                Assert.AreNotEqual(actualResult.AdultClassificationScore, "0.000", "Adult Score");
-            }
-
-            if (actualResult.IsImageRacyClassified)
-            {
-                Assert.AreNotEqual(actualResult.RacyClassificationScore, "0.000", "Racy Score");
-            }
+            Assert.AreNotEqual(actualResult.AdultClassificationScore, "0.000", "Adult Score");
+            Assert.AreNotEqual(actualResult.RacyClassificationScore, "0.000", "Racy Score");
         }
 
         /// <summary>

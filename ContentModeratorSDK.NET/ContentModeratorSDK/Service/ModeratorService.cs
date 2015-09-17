@@ -17,6 +17,7 @@ namespace ContentModeratorSDK.Service
     using ContentModeratorSDK.Service.Results;
     using ContentModeratorSDK.Text;
     using Newtonsoft.Json;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Service which interacts with the Content Moerator Api
@@ -74,6 +75,49 @@ namespace ContentModeratorSDK.Service
                 this.Addkey(message, this.options.ImageServiceKey);
 
                 EvaluateImageRequest request = new EvaluateImageRequest(imageContent);
+
+                if (imageContent.BinaryContent == null)
+                {
+                    message.Content = new StringContent(
+                        JsonConvert.SerializeObject(request),
+                        Encoding.UTF8,
+                        "application/json");
+                }
+                else
+                {
+                    message.Content = new StreamContent(imageContent.BinaryContent.Stream);
+                    message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
+                }
+
+                return await this.SendRequest<EvaluateImageResult>(client, message);
+            }
+        }
+
+        /// <summary>
+        /// Call Evaluate Image, to determine whether the image violates any policy
+        /// </summary>
+        /// <param name="imageContent">Image Content</param>
+        /// <returns>Evaluate result</returns>
+        public async Task<EvaluateImageResult> EvaluateImageWithMultipleRatingsAsync(ImageModeratableContent imageContent)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+
+                string urlPath = $"{this.options.ImageServicePathV2}{"/Image/EvaluateImage"}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.ImageServiceKeyV2);
+
+                EvaluateImageRequest request = new EvaluateImageRequest(imageContent);
+
+                if (imageContent.ImproveQualityForMatch)
+                {
+                    request.Metadata = new List<KeyValue> {
+                                    new KeyValue { Key = "ImproveQualityForMatch", Value = "true" },
+                                    new KeyValue {Key = "RunImageClassifier", Value="true" }
+                                   };
+                }
 
                 if (imageContent.BinaryContent == null)
                 {

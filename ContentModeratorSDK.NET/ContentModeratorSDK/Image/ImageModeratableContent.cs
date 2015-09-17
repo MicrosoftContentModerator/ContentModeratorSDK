@@ -22,19 +22,23 @@ namespace ContentModeratorSDK.Image
 
         public BinaryContent BinaryContent { get; }
 
+        public bool ImproveQualityForMatch { get; }
         /// <summary>
         /// Constructor, taking as input a url
         /// </summary>
         /// <param name="url">Url where image is located</param>
-        public ImageModeratableContent(string url)
+        public ImageModeratableContent(string url, bool improveQualityForMatch = false)
         {
             this.ContentAsString = url;
             this.DataRepresentationType = DataRepresentationType.Url;
+            this.ImproveQualityForMatch = improveQualityForMatch;
+
         }
 
-        public ImageModeratableContent(BinaryContent binaryContent)
+        public ImageModeratableContent(BinaryContent binaryContent, bool improveQualityForMatch = false)
         {
             this.BinaryContent = binaryContent;
+            this.ImproveQualityForMatch = improveQualityForMatch;
         }
 
         /// <summary>

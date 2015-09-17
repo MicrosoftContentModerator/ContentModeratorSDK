@@ -14,6 +14,7 @@ namespace ContentModeratorSDK.Tests
     using ContentModeratorSDK.Service;
     using ContentModeratorSDK.Text;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Configuration;
 
     [TestClass]
     public class ContentModeratorSDKTest
@@ -33,19 +34,21 @@ namespace ContentModeratorSDK.Tests
         {
             this.serviceOptions = new ModeratorServiceOptions()
             {
-                HostUrl = "https://api.microsoftmoderator.com",
-                ImageServicePath = "ImageModerator/v1",
-                TextServicePath = "TextModerator/v1",
-                TextServiceCustomListPath = "Text/Admin",
-                ImageServiceCustomListPath = "Image/Validate",
+                HostUrl = ConfigurationManager.AppSettings["HostUrl"],
+                ImageServicePath = ConfigurationManager.AppSettings["ImageServicePath"],
+                TextServicePath = ConfigurationManager.AppSettings["TextServicePath"],
+                TextServiceCustomListPath = ConfigurationManager.AppSettings["TextServiceCustomListPath"],
+                ImageServiceCustomListPath = ConfigurationManager.AppSettings["ImageServiceCustomListPath"],
+                ImageServicePathV2 = ConfigurationManager.AppSettings["ImageServicePathV2"],
 
                 // Input your keys after signing up for content moderator below
                 // Visit the API manager portal to get keys:
                 // https://developer.microsoftmoderator.com/docs/services?ref=mktg
-                ImageServiceKey = "a4bc9ad8-7517-4934-a903-0b0fad380801",
-                TextServiceKey = "708301853fce4454b168f719d0b349af",
-                TextServiceCustomListKey = "7c6144a02722463dbe07eceead3d3fdb",
-                ImageServiceCustomListKey = "2766c10e-04e5-4139-9aa8-30eb6fd3b499",
+                ImageServiceKey = ConfigurationManager.AppSettings["ImageServiceKey"],
+                TextServiceKey = ConfigurationManager.AppSettings["TextServiceKey"],
+                TextServiceCustomListKey = ConfigurationManager.AppSettings["TextServiceCustomListKey"],
+                ImageServiceCustomListKey = ConfigurationManager.AppSettings["ImageServiceCustomListKey"],
+                ImageServiceKeyV2 = ConfigurationManager.AppSettings["ImageServiceKeyV2"],
             };
         }
 
@@ -65,6 +68,31 @@ namespace ContentModeratorSDK.Tests
 
             var score = actualResult.advancedInfo.First(x => string.Equals(x.Key, "score", StringComparison.OrdinalIgnoreCase));
             Assert.AreEqual("0.000", score.Value, "score value");
+        }
+
+        /// <summary>
+        /// Evaluate an image based on a provided url with improved quality match.
+        /// </summary>
+        [TestMethod]
+        public void EvaluateImageUrlTestWithImproveQualityMatch()
+        {
+            IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
+
+            ImageModeratableContent imageContent = new ImageModeratableContent(TestImageUrl, true);
+            var moderateResult = moderatorService.EvaluateImageWithMultipleRatingsAsync(imageContent);
+            var actualResult = moderateResult.Result;
+            Assert.IsTrue(actualResult != null, "Expected valid result");
+            Assert.IsTrue(actualResult.advancedInfo != null, "Expected valid result");
+
+            if (actualResult.IsImageAdultClassified)
+            {
+                Assert.AreNotEqual(actualResult.AdultClassificationScore, "0.000", "Adult Score");
+            }
+
+            if (actualResult.IsImageRacyClassified)
+            {
+                Assert.AreNotEqual(actualResult.RacyClassificationScore, "0.000", "Racy Score");
+            }
         }
 
         /// <summary>

@@ -18,5 +18,26 @@ namespace ContentModeratorSDK.Service.Results
         /// Array of name value pairs wit specific information about evaluate
         /// </summary>
         public AdvancedInfo[] advancedInfo;
+
+        /// <summary>
+        /// Image adult classification score
+        /// </summary>
+        public int AdultClassificationScore;
+
+        /// <summary>
+        /// Image is in adult category
+        /// </summary>
+        public bool IsImageAdultClassified;
+
+        /// <summary>
+        /// Image is in racism category
+        /// </summary>
+        public bool IsImageRacyClassified;
+
+        /// <summary>
+        /// Image racy classification score
+        /// </summary>
+        public int RacyClassificationScore;
+
     }
 }

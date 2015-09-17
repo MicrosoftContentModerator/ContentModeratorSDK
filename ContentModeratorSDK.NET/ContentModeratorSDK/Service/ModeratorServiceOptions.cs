@@ -19,6 +19,11 @@ namespace ContentModeratorSDK.Service
         public string ImageServicePath { get; set; }
 
         /// <summary>
+        /// Url Path to image service
+        /// </summary>
+        public string ImageServicePathV2 { get; set; }
+
+        /// <summary>
         /// Url Path to text service
         /// </summary>
         public string TextServicePath { get; set; }
@@ -27,6 +32,11 @@ namespace ContentModeratorSDK.Service
         /// Key for image service
         /// </summary>
         public string ImageServiceKey { get; set; }
+
+        /// <summary>
+        /// Key for image service
+        /// </summary>
+        public string ImageServiceKeyV2 { get; set; }
 
         /// <summary>
         /// Key for text service

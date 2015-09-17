@@ -24,6 +24,14 @@ namespace ContentModeratorSDK
         Task<EvaluateImageResult> EvaluateImageAsync(ImageModeratableContent imageContent);
 
         /// <summary>
+        /// Call Evaluate Image, to determine whether the image violates any policy based
+        ///  on multiple ratings.
+        /// </summary>
+        /// <param name="imageContent">Image Content</param>
+        /// <returns>Evaluate result</returns>
+        Task<EvaluateImageResult> EvaluateImageWithMultipleRatingsAsync(ImageModeratableContent imageContent);
+
+        /// <summary>
         /// Match an image against the images uploaded to the Image List
         /// </summary>
         /// <param name="imageContent">Image to match</param>

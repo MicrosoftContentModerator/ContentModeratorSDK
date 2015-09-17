@@ -7,6 +7,7 @@
 namespace ContentModeratorSDK.Service.Requests
 {
     using ContentModeratorSDK.Image;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Request to Evaluate an image. Evaluate Image determines how an image
@@ -17,6 +18,9 @@ namespace ContentModeratorSDK.Service.Requests
         public EvaluateImageRequest(ImageModeratableContent content)
             : base(content)
         {
+            this.Metadata = new List<KeyValue>();
         }
+
+        public List<KeyValue> Metadata { get; set; }
     }
 }

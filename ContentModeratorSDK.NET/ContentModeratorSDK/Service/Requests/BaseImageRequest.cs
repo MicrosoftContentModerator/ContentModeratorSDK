@@ -10,6 +10,16 @@ namespace ContentModeratorSDK.Service.Requests
     using ContentModeratorSDK.Image;
 
     /// <summary>
+    /// Key value pairs for passing additional meta data info.
+    /// </summary>
+    public class KeyValue
+    {
+        public string Key { get; set; }
+
+        public string Value { get; set; }
+    }
+
+    /// <summary>
     /// Base request for an image operation
     /// </summary>
     public class BaseImageRequest : BaseModeratorRequest

@@ -1,0 +1,15 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23023.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{42A42D5A-A5F5-4E4C-B161-39170498DA0F}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\TFS\OBO\WABASH\Src\PDNA\Utilities\PowerShellClient\PhotoDNACS.psm1 = ..\..\..\TFS\OBO\WABASH\Src\PDNA\Utilities\PowerShellClient\PhotoDNACS.psm1
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

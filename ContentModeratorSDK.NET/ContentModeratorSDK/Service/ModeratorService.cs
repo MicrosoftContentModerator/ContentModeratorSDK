@@ -114,8 +114,7 @@ namespace ContentModeratorSDK.Service
                 if (imageContent.ImproveQualityForMatch)
                 {
                     request.Metadata = new List<KeyValue> {
-                                    new KeyValue { Key = "ImproveQualityForMatch", Value = "true" },
-                                    new KeyValue {Key = "RunImageClassifier", Value="true" }
+                                    new KeyValue { Key = "ImproveQualityForMatch", Value = "TRUE" },
                                    };
                 }
 

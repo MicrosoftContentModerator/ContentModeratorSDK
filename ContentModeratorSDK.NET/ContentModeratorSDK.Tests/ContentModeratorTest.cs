@@ -71,14 +71,14 @@ namespace ContentModeratorSDK.Tests
         }
 
         /// <summary>
-        /// Evaluate an image based on a provided url with improved quality match.
+        /// Evaluate an image based on a provided url with multiple ratings reported.
         /// </summary>
         [TestMethod]
-        public void EvaluateImageUrlTestWithImproveQualityMatch()
+        public void EvaluateImageUrlTestWithMultipleRatingTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
 
-            ImageModeratableContent imageContent = new ImageModeratableContent(TestImageUrl, true);
+            ImageModeratableContent imageContent = new ImageModeratableContent(TestImageUrl, improveQualityForMatch:true);
             var moderateResult = moderatorService.EvaluateImageWithMultipleRatingsAsync(imageContent);
             var actualResult = moderateResult.Result;
             Assert.IsTrue(actualResult != null, "Expected valid result");

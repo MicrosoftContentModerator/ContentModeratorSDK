@@ -22,7 +22,7 @@ namespace ContentModeratorSDK.Service.Results
         /// <summary>
         /// Image adult classification score
         /// </summary>
-        public int AdultClassificationScore;
+        public double AdultClassificationScore;
 
         /// <summary>
         /// Image is in adult category
@@ -37,7 +37,7 @@ namespace ContentModeratorSDK.Service.Results
         /// <summary>
         /// Image racy classification score
         /// </summary>
-        public int RacyClassificationScore;
+        public double RacyClassificationScore;
 
     }
 }

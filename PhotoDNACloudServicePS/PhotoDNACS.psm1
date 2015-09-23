@@ -28,8 +28,8 @@ Function Get-FilePhotoDNA
         .DESCRIPTION
          Reads the extension & contents of the target file and submits an HTTP POST request to Microsoft PhotoDNA Cloud Service.
 
-		.LINK
-	     Get-DirectoryPhotoDNA
+        .LINK
+         Get-DirectoryPhotoDNA
 
         .PARAMETER APIKey
          The subscription key from https://developer-westus.microsoftmoderator.com/developer; may require logging in through Azure portal to access.
@@ -52,9 +52,9 @@ Function Get-FilePhotoDNA
         [string]$TargetFile
     )
 
-	$Subject = (Get-Item $TargetFile -EA Stop)
+    $Subject = (Get-Item $TargetFile -EA Stop)
 
-	switch($Subject.Extension) {
+    switch($Subject.Extension) {
         {@('.jpeg', '.jpg') -contains $_} {$ContentType = "image/jpeg"}
         {@('.gif') -contains $_} {$ContentType = "image/gif"}
         {@('.png') -contains $_} {$ContentType = "image/png"}
@@ -75,8 +75,8 @@ Function Get-DirectoryPhotoDNA
         .DESCRIPTION
          Recursively checks a directory for image files added, created, or modified since the previous run (or all image files on first run) and writes successful results to a CSV output file in the target directory.
 
-		.LINK
-	     Get-FilePhotoDNA
+        .LINK
+         Get-FilePhotoDNA
 
         .PARAMETER APIKey
          The subscription key from https://developer-westus.microsoftmoderator.com/developer; may require logging in through Azure portal to access.
@@ -113,9 +113,9 @@ Function Get-DirectoryPhotoDNA
         Import-Csv $LogFile |
             ForEach-Object {
                 $LastCheck = $_."Check Time"
-				if($_."Status Code" -eq 3000) {
-					$PreviouslyChecked += $_."File Name"
-				}
+                if($_."Status Code" -eq 3000) {
+                    $PreviouslyChecked += $_."File Name"
+                }
             }
     }
     else {
@@ -124,14 +124,14 @@ Function Get-DirectoryPhotoDNA
     
     $Then = [datetime]::Parse($LastCheck)
 
-    Get-ChildItem -Recurse $TargetDirectory | 
+    Get-ChildItem -Recurse $TargetDirectory |
     ForEach-Object {
         if ($SupportedExtensions -contains $_.Extension -and ($_.LastWriteTimeUtc -ge $Then -or $PreviouslyChecked -notcontains $_.FullName)) {
-			$response = (Get-FilePhotoDNA -APIKey $APIKey -TargetFile $_.FullName)
-			Add-Content -Path $LogFile -Value "$($ThisCheck),$($_.FullName),$($response.TrackingId),$($response.Status.Code),$($response.Status.Description),$($response.IsMatch),$($response.MatchDetails.MatchFlags.AdvancedInfo.Value),$($response.MatchDetails.MatchFlags.Source),$($response.MatchDetails.MatchFlags.Violations)";
-			if($response.Status.Code -ne 3000) {
-				Write-Warning "Did not process $($_.FullName)"
-			}
+            $response = (Get-FilePhotoDNA -APIKey $APIKey -TargetFile $_.FullName)
+            Add-Content -Path $LogFile -Value "$($ThisCheck),$($_.FullName),$($response.TrackingId),$($response.Status.Code),$($response.Status.Description),$($response.IsMatch),$($response.MatchDetails.MatchFlags.AdvancedInfo.Value),$($response.MatchDetails.MatchFlags.Source),$($response.MatchDetails.MatchFlags.Violations)";
+            if($response.Status.Code -ne 3000) {
+                Write-Warning "Did not process $($_.FullName)"
+            }
         }
-    }    
+    }
 }

@@ -34,11 +34,6 @@ namespace ContentModeratorSDK.Service
         public string ImageServiceKey { get; set; }
 
         /// <summary>
-        /// Key for image service
-        /// </summary>
-        public string ImageServiceKeyV2 { get; set; }
-
-        /// <summary>
         /// Key for text service
         /// </summary>
         public string TextServiceKey { get; set; }

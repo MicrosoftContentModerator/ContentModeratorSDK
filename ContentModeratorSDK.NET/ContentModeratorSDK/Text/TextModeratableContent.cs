@@ -11,10 +11,11 @@ namespace ContentModeratorSDK.Text
     /// </summary>
     public class TextModeratableContent : IModeratableContent
     {
-        public TextModeratableContent(string text)
+        public TextModeratableContent(string text, string englishTranslation = null)
         {
             this.ContentAsString = text;
             this.DataRepresentationType = DataRepresentationType.Inline;
+            this.EnglishTranslation = englishTranslation;
         }
 
         /// <summary>
@@ -31,5 +32,10 @@ namespace ContentModeratorSDK.Text
         /// Text representation
         /// </summary>
         public string DataRepresentation => this.DataRepresentationType.ToString();
+
+        /// <summary>
+        /// English translation
+        /// </summary>
+        public string EnglishTranslation { get; }
     }
 }

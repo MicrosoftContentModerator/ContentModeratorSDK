@@ -62,6 +62,14 @@ namespace ContentModeratorSDK
         Task<ImageRefreshIndexResult> RefreshImageIndexAsync();
 
         /// <summary>
+        /// Call Evaluate Image, to determine whether the image violates any policy
+        /// </summary>
+        /// <param name="imageContent">Image Content</param>
+        /// <returns>Evaluate result</returns>
+        Task<ExtractTextResult> ExtractTextAsync(ImageModeratableContent imageContent, string language);
+
+
+        /// <summary>
         /// Adds a term to the term list
         /// </summary>
         /// <param name="textContent">Term text</param>

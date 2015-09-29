@@ -59,7 +59,8 @@ namespace ContentModeratorSDK.Service
         #region Apis
 
         /// <summary>
-        /// Call Evaluate Image, to determine whether the image violates any policy
+        /// Call Evaluate Image, to determine whether the image violates any policy. This api returns a single
+        /// score. 
         /// </summary>
         /// <param name="imageContent">Image Content</param>
         /// <returns>Evaluate result</returns>
@@ -104,19 +105,12 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.ImageServicePathV2}{"/Image/EvaluateImage"}";
+                string urlPath = $"{this.options.ImageServicePathV2}{"/Evaluate"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKeyV2);
+                this.Addkey(message, this.options.ImageServiceKey);
 
                 EvaluateImageRequest request = new EvaluateImageRequest(imageContent);
-
-                if (imageContent.ImproveQualityForMatch)
-                {
-                    request.Metadata = new List<KeyValue> {
-                                    new KeyValue { Key = "ImproveQualityForMatch", Value = "TRUE" },
-                                   };
-                }
 
                 if (imageContent.BinaryContent == null)
                 {
@@ -268,6 +262,42 @@ namespace ContentModeratorSDK.Service
                 this.Addkey(message, this.options.ImageServiceCustomListKey);
 
                 return await this.SendRequest<ImageRefreshIndexResult>(client, message);
+            }
+        }
+
+        /// <summary>
+        /// Call ExtractText method to extract the text in an image through the use of OCR
+        /// </summary>
+        /// <param name="imageContent">Image to run Extraction on</param>
+        /// <param name="language">Language</param>
+        /// <returns>Extraction result</returns>
+        public async Task<ExtractTextResult> ExtractTextAsync(ImageModeratableContent imageContent, string language = "eng")
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+
+                string urlPath = $"{this.options.ImageServicePath}{"/Image/ExtractText"}{"?language="}{language}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.ImageServiceKey);
+
+                ExtractTextRequest request = new ExtractTextRequest(imageContent);
+
+                if (imageContent.BinaryContent == null)
+                {
+                    message.Content = new StringContent(
+                        JsonConvert.SerializeObject(request),
+                        Encoding.UTF8,
+                        "application/json");
+                }
+                else
+                {
+                    message.Content = new StreamContent(imageContent.BinaryContent.Stream);
+                    message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
+                }
+
+                return await this.SendRequest<ExtractTextResult>(client, message);
             }
         }
 

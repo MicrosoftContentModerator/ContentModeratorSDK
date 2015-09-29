@@ -21,6 +21,7 @@ namespace ContentModeratorSDK.Service.Requests.TermList
             {
                 DataRepresentation = content.DataRepresentation,
                 Value = content.ContentAsString,
+                EnglishTranslation = content.EnglishTranslation,
             };
         }
     }

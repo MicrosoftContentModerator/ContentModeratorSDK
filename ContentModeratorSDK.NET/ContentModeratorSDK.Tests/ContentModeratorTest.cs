@@ -16,11 +16,13 @@ namespace ContentModeratorSDK.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Configuration;
 
+    /// <summary>
+    /// End to end tests for the Content Moderator service
+    /// </summary>
     [TestClass]
     public class ContentModeratorSDKTest
     {
         private const string TestImageUrl = "https://cdn.schedulicity.com/usercontent/b9de6e06-e954-4169-ac44-57fa1c3b4245.jpg";
-            //"http://c.s-microsoft.com/en-us/CMSImages/hero.jpg?version=e5df080c-643c-6e0a-d7ec-ac3e1a093add";
 
         public const string TestImageContent = @"Content\test.jpg";
 
@@ -48,12 +50,12 @@ namespace ContentModeratorSDK.Tests
                 TextServiceKey = ConfigurationManager.AppSettings["TextServiceKey"],
                 TextServiceCustomListKey = ConfigurationManager.AppSettings["TextServiceCustomListKey"],
                 ImageServiceCustomListKey = ConfigurationManager.AppSettings["ImageServiceCustomListKey"],
-                ImageServiceKeyV2 = ConfigurationManager.AppSettings["ImageServiceKeyV2"],
             };
         }
 
         /// <summary>
-        /// Evaluate an image based on a provided url
+        /// Evaluate an image based on a provided url. This method returns a single valuation score, 
+        /// as well as a flag indicating whether evaluation was successful.
         /// </summary>
         [TestMethod]
         public void EvaluateImageUrlTest()
@@ -64,32 +66,15 @@ namespace ContentModeratorSDK.Tests
             var moderateResult = moderatorService.EvaluateImageAsync(imageContent);
             var actualResult = moderateResult.Result;
             Assert.IsTrue(actualResult != null, "Expected valid result");
-            Assert.IsTrue(actualResult.advancedInfo != null, "Expected valid result");
+            Assert.IsTrue(actualResult.AdvancedInfo != null, "Expected valid result");
 
-            var score = actualResult.advancedInfo.First(x => string.Equals(x.Key, "score", StringComparison.OrdinalIgnoreCase));
-            Assert.AreEqual("0.000", score.Value, "score value");
+            var score = actualResult.AdvancedInfo.First(x => string.Equals(x.Key, "score", StringComparison.OrdinalIgnoreCase));
+            Assert.AreNotEqual("0.000", score.Value, "score value");
         }
 
         /// <summary>
-        /// Evaluate an image based on a provided url with multiple ratings reported.
-        /// </summary>
-        [TestMethod]
-        public void EvaluateImageUrlTestWithMultipleRatingTest()
-        {
-            IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
-
-            ImageModeratableContent imageContent = new ImageModeratableContent(TestImageUrl, improveQualityForMatch:true);
-            var moderateResult = moderatorService.EvaluateImageWithMultipleRatingsAsync(imageContent);
-            var actualResult = moderateResult.Result;
-            Assert.IsTrue(actualResult != null, "Expected valid result");
-            Assert.IsTrue(actualResult.advancedInfo != null, "Expected valid result");
-
-            Assert.AreNotEqual(actualResult.AdultClassificationScore, "0.000", "Adult Score");
-            Assert.AreNotEqual(actualResult.RacyClassificationScore, "0.000", "Racy Score");
-        }
-
-        /// <summary>
-        /// Evaluate an image providing binary content inline to the request
+        /// Evaluate an image providing binary content inline to the request. This method returns a single valuation score, 
+        /// as well as a flag indicating whether evaluation was successful.
         /// </summary>
         [TestMethod]
         public void EvaluateImageContentTest()
@@ -102,10 +87,10 @@ namespace ContentModeratorSDK.Tests
                 var moderateResult = moderatorService.EvaluateImageAsync(imageContent);
                 var actualResult = moderateResult.Result;
                 Assert.IsTrue(actualResult != null, "Expected valid result");
-                Assert.IsTrue(actualResult.advancedInfo != null, "Expected valid result");
+                Assert.IsTrue(actualResult.AdvancedInfo != null, "Expected valid result");
 
                 var score =
-                    actualResult.advancedInfo.First(
+                    actualResult.AdvancedInfo.First(
                         x => string.Equals(x.Key, "score", StringComparison.OrdinalIgnoreCase));
                 double scoreValue = double.Parse(score.Value);
                 Assert.IsTrue(scoreValue > 0, "Expected higher than 0 score value for test image");
@@ -113,7 +98,54 @@ namespace ContentModeratorSDK.Tests
         }
 
         /// <summary>
-        /// Add Image to image list, then verify it is matched
+        /// V2 version of the Evaluate an image based on a provided url. This Api will return
+        /// 2 scores. An AdultClassificationScore, which indicates the likelihood an image is adult,
+        /// and a RacyClassificationScore which indicates the likelihood an image is racy. A boolean 
+        /// result is returned as well for both scores, indicating the server resolution on whether the image
+        /// is racy and/or adult.
+        /// </summary>
+        [TestMethod]
+        public void EvaluateImageUrlV2Test()
+        {
+            IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
+
+            ImageModeratableContent imageContent = new ImageModeratableContent(TestImageUrl);
+            var moderateResult = moderatorService.EvaluateImageWithMultipleRatingsAsync(imageContent);
+            var actualResult = moderateResult.Result;
+            Assert.IsTrue(actualResult != null, "Expected valid result");
+            Assert.IsTrue(actualResult.AdvancedInfo != null, "Expected valid result");
+
+            Assert.AreNotEqual(actualResult.AdultClassificationScore, "0.000", "Adult Score");
+            Assert.AreNotEqual(actualResult.RacyClassificationScore, "0.000", "Racy Score");
+        }
+
+        /// <summary>
+        /// V2 version of the Evaluate an image based on provided content. This Api will return
+        /// 2 scores. An AdultClassificationScore, which indicates the likelihood an image is adult,
+        /// and a RacyClassificationScore which indicates the likelihood an image is racy. A boolean 
+        /// result is returned as well for both scores, indicating the server resolution on whether the image
+        /// is racy and/or adult.
+        /// </summary>
+        [TestMethod]
+        public void EvaluateImageContentV2Test()
+        {
+            IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
+
+            using (Stream stream = new FileStream(TestImageContent, FileMode.Open, FileAccess.Read))
+            {
+                ImageModeratableContent imageContent =
+                    new ImageModeratableContent(new BinaryContent(stream, "image/jpeg"));
+                var moderateResult = moderatorService.EvaluateImageWithMultipleRatingsAsync(imageContent);
+                var actualResult = moderateResult.Result;
+                Assert.IsTrue(actualResult != null, "Expected valid result");
+
+                Assert.AreNotEqual(actualResult.AdultClassificationScore, "0.000", "Adult Score");
+                Assert.AreNotEqual(actualResult.RacyClassificationScore, "0.000", "Racy Score");
+            }
+        }
+
+        /// <summary>
+        /// Add Image to image list, then verify it is matched after it was added.
         /// </summary>
         [TestMethod]
         public void AddImageTest()
@@ -149,7 +181,35 @@ namespace ContentModeratorSDK.Tests
         }
 
         /// <summary>
-        /// Screen text against the default list of terms for english
+        /// Extract the text from an image using OCR
+        /// </summary>
+        [TestMethod]
+        public void ExtractTextTest()
+        {
+            IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
+
+            using (Stream stream = new FileStream(TestImageContent, FileMode.Open, FileAccess.Read))
+            {
+                ImageModeratableContent imageContent =
+                    new ImageModeratableContent(new BinaryContent(stream, "image/jpeg"));
+
+                // extract
+                var extractResponse = moderatorService.ExtractTextAsync(imageContent, "eng");
+                var extractResult = extractResponse.Result;
+
+                Assert.IsTrue(extractResult != null, "Expected valid result");
+                Assert.IsTrue(extractResult.AdvancedInfo != null, "Expected valid result");
+
+                var text =
+                    extractResult.AdvancedInfo.First(
+                        x => string.Equals(x.Key, "Text", StringComparison.OrdinalIgnoreCase));
+
+                Assert.AreEqual("THIS IS A \r\nSIMPLE TEST \r\n", text.Value, "Text message was unexpected");
+            }
+        }
+
+        /// <summary>
+        /// Screen text against the default list of terms for english. Validate that the text is matched.
         /// </summary>
         [TestMethod]
         public void ScreenTextTest()
@@ -171,6 +231,7 @@ namespace ContentModeratorSDK.Tests
             Assert.IsTrue(screenResult.MatchDetails.MatchFlags != null, "Expected valid Match Flags");
 
             var matchFlag = screenResult.MatchDetails.MatchFlags.FirstOrDefault();
+            Assert.IsTrue(matchFlag != null, "Expected to see a match flag!");
             Assert.AreEqual("freaking", matchFlag.Source, "Expected term to match");
         }
 
@@ -182,7 +243,8 @@ namespace ContentModeratorSDK.Tests
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
 
-            TextModeratableContent textContent = new TextModeratableContent("FakeProfanity");
+            // We are creating a term "FakeProfanity" in english (thus provide tha same english translation), then matching against it.
+            TextModeratableContent textContent = new TextModeratableContent(text:"FakeProfanity", englishTranslation:"FakeProfanity");
             var taskResult = moderatorService.AddTermAsync(textContent, "eng");
             var actualResult = taskResult.Result;
             Assert.IsTrue(actualResult != null, "Expected valid result for AddTerm");
@@ -191,7 +253,7 @@ namespace ContentModeratorSDK.Tests
             var refreshResult = refreshTask.Result;
             Assert.IsTrue(refreshResult != null, "Expected valid result for RefreshIndex");
 
-            var screenResponse = moderatorService.ScreenTextAsync(textContent, "eng");
+            var screenResponse = moderatorService.ScreenTextAsync(new TextModeratableContent("This is a FakeProfanity!"), "eng");
             var screenResult = screenResponse.Result;
             Assert.IsTrue(screenResult.IsMatch, "Expected IsMatch to be true");
             Assert.IsTrue(screenResult != null, "Expected valid result");
@@ -204,7 +266,7 @@ namespace ContentModeratorSDK.Tests
         }
 
         /// <summary>
-        /// Identify the language of a text
+        /// Identify the language of an input text
         /// </summary>
         [TestMethod]
         public void IdentifyLanguageTest()

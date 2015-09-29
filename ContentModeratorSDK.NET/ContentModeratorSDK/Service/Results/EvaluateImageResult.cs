@@ -17,7 +17,7 @@ namespace ContentModeratorSDK.Service.Results
         /// <summary>
         /// Array of name value pairs wit specific information about evaluate
         /// </summary>
-        public AdvancedInfo[] advancedInfo;
+        public AdvancedInfo[] AdvancedInfo;
 
         /// <summary>
         /// Image adult classification score

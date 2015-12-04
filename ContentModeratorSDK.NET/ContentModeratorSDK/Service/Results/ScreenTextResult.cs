@@ -11,14 +11,36 @@ namespace ContentModeratorSDK.Service.Results
     /// </summary>
     public class ScreenTextResult : BaseModeratorResult
     {
+        public string Language;
+        public string NormalizedText;
+
+        public MatchTerm[] Terms;
+
+        public MatchUrl[] Urls;
+
         public string ContentId;
         public bool IsMatch;
-
-        /// <summary>
-        /// The match details contain information about the match in the AdvancedInfo. Including:
-        /// MatchStartIndex: Where in the text did the match start
-        /// MatchEndIndex: Where in the text did the match end
-        /// </summary>
+        
         public MatchDetails MatchDetails;
+    }
+
+    public class MatchTerm
+    {
+        public string Term;
+        public int Index;
+    }
+
+    public class MatchUrl
+    {
+        public MatchUrlCategories categories;
+
+        public string URL;
+    }
+
+    public class MatchUrlCategories
+    {
+        public int Adult;
+        public int Malware;
+        public int Phishing;
     }
 }

@@ -191,6 +191,38 @@ namespace ContentModeratorSDK.Service
             }
         }
 
+        /// <summary>
+        /// Screen Text against the term list. Note that Import Term List needs to be run
+        /// against the appropriate language before calling this method, for all the terms
+        /// of that language to have been imported.
+        /// </summary>
+        /// <param name="textContent">Text to screen</param>
+        /// <param name="language">Language in ISO-639-3 format</param>
+        /// <returns></returns>
+        public async Task<ScreenTextResult> ScreenTextV2Async(TextModeratableContent textContent, string language = "eng")
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+
+                string urlPath = $"{this.options.TextServicePathV2}{$"/Screen?language={language}"}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.TextServiceKey);
+
+                
+
+                message.Content = new StringContent(
+                    textContent.ContentAsString,
+                    Encoding.Default,
+                    "text/plain");
+                message.Content.Headers.ContentType.MediaType = "text/plain";
+                message.Content.Headers.ContentType.CharSet = null;
+                
+                return await this.SendRequest<ScreenTextResult>(client, message);
+            }
+        }
+
         public async Task<IdentifyLanguageResult> IdentifyLanguageAsync(TextModeratableContent textContent)
         {
             using (var client = new HttpClient())
@@ -314,7 +346,7 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 string urlPath =
-                    $"{this.options.TextServiceCustomListPath}{$"/Text/Add?language={language}"}";
+                    $"{this.options.TextServiceCustomListPath}{$"/{textContent.ContentAsString}?language={language}"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Put, urlPath);
 
                 this.Addkey(message, this.options.TextServiceCustomListKey);
@@ -340,7 +372,7 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 string urlPath =
-                    $"{this.options.TextServiceCustomListPath}{$"/Text/Refreshindex?language={language}"}";
+                    $"{this.options.TextServiceCustomListPath}{$"/Refreshindex?language={language}"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.TextServiceCustomListKey);
@@ -362,7 +394,7 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 string urlPath =
-                    $"{this.options.TextServiceCustomListPath}{$"/Text/{textContent.ContentAsString}?language={language}"}";
+                    $"{this.options.TextServiceCustomListPath}{$"/{textContent.ContentAsString}?language={language}"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Delete, urlPath);
 
                 this.Addkey(message, this.options.TextServiceCustomListKey);
@@ -382,8 +414,8 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.TextServiceCustomListPath}{$"/Text/Import?language={language}"}";
-                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Put, urlPath);
+                string urlPath = $"{this.options.TextServiceCustomListPath}{$"/Import?language={language}"}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.TextServiceCustomListKey);
 

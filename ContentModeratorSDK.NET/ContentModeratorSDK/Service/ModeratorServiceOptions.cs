@@ -29,6 +29,11 @@ namespace ContentModeratorSDK.Service
         public string TextServicePath { get; set; }
 
         /// <summary>
+        /// Url Path to V2 text service
+        /// </summary>
+        public string TextServicePathV2 { get; set; }
+
+        /// <summary>
         /// Key for image service
         /// </summary>
         public string ImageServiceKey { get; set; }

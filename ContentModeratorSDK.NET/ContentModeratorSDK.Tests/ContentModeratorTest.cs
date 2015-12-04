@@ -42,6 +42,7 @@ namespace ContentModeratorSDK.Tests
                 TextServiceCustomListPath = ConfigurationManager.AppSettings["TextServiceCustomListPath"],
                 ImageServiceCustomListPath = ConfigurationManager.AppSettings["ImageServiceCustomListPath"],
                 ImageServicePathV2 = ConfigurationManager.AppSettings["ImageServicePathV2"],
+                TextServicePathV2 = ConfigurationManager.AppSettings["TextServicePathV2"],
 
                 // Input your keys after signing up for content moderator below
                 // Visit the API manager portal to get keys:
@@ -212,14 +213,38 @@ namespace ContentModeratorSDK.Tests
         /// Screen text against the default list of terms for english. Validate that the text is matched.
         /// </summary>
         [TestMethod]
-        public void ScreenTextTest()
+        public void ScreenTextV2Test()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
 
             // Import the term list. This needs to only be done once before screen
-            var taskResult = moderatorService.ImportTermListAsync("eng");
-            var actualResult = taskResult.Result;
-            Assert.IsTrue(actualResult != null, "Expected valid result for ImportTermList");
+            moderatorService.ImportTermListAsync("eng").Wait();
+
+            moderatorService.RefreshTextIndexAsync("eng").Wait();
+
+            // Run screen to match, validating match result
+            string text = "The <a href=\"www.bunnies.com\">qu!ck</a> brown  <a href=\"b.suspiciousdomain.com\">f0x</a> jumps over the lzay dog www.benign.net. freaking awesome.";
+            TextModeratableContent textContent = new TextModeratableContent(text);
+            var screenResponse = moderatorService.ScreenTextV2Async(textContent, "eng");
+            var screenResult = screenResponse.Result;
+
+            Assert.IsTrue(screenResult != null, "Expected valid result");
+            Assert.IsTrue(screenResult.Terms != null, "Expected valid Terms");
+            Assert.IsTrue(screenResult.Urls != null, "Expected valid Urls");
+        }
+
+        /// <summary>
+        /// Screen text against the default list of terms for english. Validate that the text is matched.
+        /// </summary>
+        [TestMethod]
+        public void ScreenTextTest()
+        {
+            IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
+            
+            // Import the term list. This needs to only be done once before screen
+            moderatorService.ImportTermListAsync("eng").Wait();
+
+            moderatorService.RefreshTextIndexAsync("eng").Wait();
 
             // Run screen to match, validating match result
             string text = "My evil freaking text!";
@@ -255,10 +280,8 @@ namespace ContentModeratorSDK.Tests
 
             var screenResponse = moderatorService.ScreenTextAsync(new TextModeratableContent("This is a FakeProfanity!"), "eng");
             var screenResult = screenResponse.Result;
-            Assert.IsTrue(screenResult.IsMatch, "Expected IsMatch to be true");
-            Assert.IsTrue(screenResult != null, "Expected valid result");
-            Assert.IsTrue(screenResult.MatchDetails != null, "Expected valid Match Details");
-            Assert.IsTrue(screenResult.MatchDetails.MatchFlags != null, "Expected valid Match Flags");
+            Assert.IsTrue(screenResult.Urls != null, "Expected valid urls");
+            Assert.IsTrue(screenResult.Terms != null, "Expected valid terms");
 
             var deleteTask = moderatorService.RemoveTermAsync(textContent, "eng");
             var deleteResult = deleteTask.Result;

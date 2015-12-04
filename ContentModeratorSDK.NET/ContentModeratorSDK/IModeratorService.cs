@@ -53,6 +53,16 @@ namespace ContentModeratorSDK
         /// <param name="textContent">Text to screen</param>
         /// <param name="language">Language in ISO-639-3 format</param>
         /// <returns></returns>
+        Task<ScreenTextResult> ScreenTextV2Async(TextModeratableContent textContent, string language);
+
+        /// <summary>
+        /// Screen Text against the term list. Note that Import Term List needs to be run
+        /// against the appropriate language before calling this method, for all the terms
+        /// of that language to have been imported.
+        /// </summary>
+        /// <param name="textContent">Text to screen</param>
+        /// <param name="language">Language in ISO-639-3 format</param>
+        /// <returns></returns>
         Task<ScreenTextResult> ScreenTextAsync(TextModeratableContent textContent, string language);
 
         /// <summary>

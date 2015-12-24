@@ -6,20 +6,16 @@
     <add key="TextServicePath" value="TextModerator/v1"/>
     <add key="PdnaServicePath" value="v1/ScanImage/Validate"/>
     <add key="TextServiceCustomListPath" value="Text/Admin"/>
-    <!--<add key="ImageServiceCustomListPath" value="ImageModerator/Admin/v1"/>-->
     <add key="ImageServiceCustomListPath" value="Image/Validate"/>
-    <!--<add key="ImageServicePathV2" value="ImageModerator/v2"/>-->
     <add key="ImageServicePathV2" value="Image/v2"/>
     <add key="TextServicePathV2" value="Text/v2"/>
-    <add key="ImageServiceKey" value="4aa97dcbc9d141d3a026a9e15c810117"/>
-    <add key="TextServiceKey" value="708301853fce4454b168f719d0b349af"/>
-    <add key="TextServiceCustomListKey" value="7c6144a02722463dbe07eceead3d3fdb"/>
-    <add key="ImageServiceCustomListKey" value="6bf352719d974a6ab61c35e08f22facb"/>
-
-    <!--<add key="ImageServiceCustomListPathV2" value="Image/v2"/>-->
+    <add key="ImageServiceKey" value=""/>
+    <add key="TextServiceKey" value=""/>
+    <add key="TextServiceCustomListKey" value=""/>
+    <add key="ImageServiceCustomListKey" value=""/>
     <add key="ImageServiceCustomListPathV2" value="Image/Validate/v2"/>
-    <add key="ImageServiceCustomListKeyV2" value="6bf352719d974a6ab61c35e08f22facb"/>
+    <add key="ImageServiceCustomListKeyV2" value=""/>
     <add key="ImageCachingPath" value="Image/Cache"/>
-    <add key="ImageCachingKey" value="7e58f40a83494929b54d91e926c6d230"/>
+    <add key="ImageCachingKey" value=""/>
   </appSettings>
 </configuration>

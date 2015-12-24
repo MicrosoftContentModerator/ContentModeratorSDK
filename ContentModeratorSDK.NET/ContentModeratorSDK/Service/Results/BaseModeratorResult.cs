@@ -20,6 +20,11 @@ namespace ContentModeratorSDK.Service.Results
         /// Tracking Id
         /// </summary>
         public string TrackingId { get; set; }
+
+        /// <summary>
+        /// Cache Id
+        /// </summary>
+        public string CacheID { get; set; }
     }
 
     /// <summary>

@@ -54,6 +54,11 @@ namespace ContentModeratorSDK.Service
         public string ImageServiceCustomListKey { get; set; }
 
         /// <summary>
+        /// Key for custom image service
+        /// </summary>
+        public string ImageServiceCustomListKeyV2 { get; set; }
+
+        /// <summary>
         /// Url Path for custom text list service
         /// </summary>
         public string TextServiceCustomListPath { get; set; }
@@ -62,5 +67,20 @@ namespace ContentModeratorSDK.Service
         /// Url Path for custom image list service
         /// </summary>
         public string ImageServiceCustomListPath { get; set; }
+
+        /// <summary>
+        /// Url Path for custom image list service V2
+        /// </summary>
+        public string ImageServiceCustomListPathV2 { get; set; }
+
+        /// <summary>
+        /// Url Path for Image caching api
+        /// </summary>
+        public string ImageCachingPath { get; set; }
+
+        /// <summary>
+        /// Key for Image caching API.
+        /// </summary>
+        public string ImageCachingKey { get; set; }
     }
 }

@@ -70,7 +70,8 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.ImageServicePath}{"/Image/EvaluateImage"}";
+                //string urlPath = $"{this.options.ImageServicePath}{"/Image/EvaluateImage"}";
+                string urlPath = $"{this.options.ImageServicePath}{"/Evaluate"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -99,13 +100,13 @@ namespace ContentModeratorSDK.Service
         /// </summary>
         /// <param name="imageContent">Image Content</param>
         /// <returns>Evaluate result</returns>
-        public async Task<EvaluateImageResult> EvaluateImageWithMultipleRatingsAsync(ImageModeratableContent imageContent)
+        public async Task<EvaluateImageResult> EvaluateImageWithMultipleRatingsAsync(ImageModeratableContent imageContent, bool cacheContent = false)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
-
-                string urlPath = $"{this.options.ImageServicePathV2}{"/Evaluate"}";
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/EvaluateImage{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Evaluate{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -129,6 +130,19 @@ namespace ContentModeratorSDK.Service
             }
         }
 
+        public async Task<EvaluateImageResult> EvaluateImageInCache(string cacheId)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Evaluate?CacheID={0}", cacheId)}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
+
+                this.Addkey(message, this.options.ImageServiceKey);
+                return await this.SendRequest<EvaluateImageResult>(client, message);
+            }
+        }        
+
         /// <summary>
         /// Match an image against the images uploaded to the Image List
         /// </summary>
@@ -140,11 +154,48 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.ImageServicePath}{"/Image/Match"}";
+                //string urlPath = $"{this.options.ImageServicePath}{"/Image/Match"}";
+                string urlPath = $"{this.options.ImageServicePath}{"/Match"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
 
+                MatchImageRequest request = new MatchImageRequest(imageContent);
+                if (imageContent.BinaryContent == null)
+                {
+                    message.Content = new StringContent(
+                        JsonConvert.SerializeObject(request),
+                        Encoding.UTF8,
+                        "application/json");
+                }
+                else
+                {
+                    message.Content = new StreamContent(imageContent.BinaryContent.Stream);
+                    message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
+                }
+
+                return await this.SendRequest<MatchImageResult>(client, message);
+            }
+        }
+
+        /// <summary>
+        /// Match an image against the images uploaded to the Image List
+        /// </summary>
+        /// <param name="imageContent">Image to match</param>
+        /// <param name="cacheContent">Cache Image content</param>
+        /// <returns>Match response</returns>
+        public async Task<MatchImageResult> MatchImageAsyncV2(ImageModeratableContent imageContent, bool cacheContent = false)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+
+                //string urlPath = $"{this.options.ImageServicePathV2}{"/Image/Match"}";
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/Match{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Match{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.ImageServiceKey);
                 MatchImageRequest request = new MatchImageRequest(imageContent);
                 if (imageContent.BinaryContent == null)
                 {
@@ -279,6 +330,49 @@ namespace ContentModeratorSDK.Service
         }
 
         /// <summary>
+        /// Add an image into the Image list
+        /// </summary>
+        /// <param name="imageContent">Image Content</param>
+        /// <param name="tag">Image policies</param>
+        /// <param name="label">Image description</param>
+        /// <returns>Immage add result</returns>
+        public async Task<ImageAddResult> ImageAddAsyncV2(ImageModeratableContent imageContent, string tag, string label)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+
+                string queryParam = string.IsNullOrWhiteSpace(tag) ? string.Empty : "?tag=" + tag;
+                if (string.IsNullOrWhiteSpace(queryParam))
+                    queryParam = string.IsNullOrWhiteSpace(label) ? string.Empty : "?label=" + label;
+                else
+                    queryParam = queryParam + "&label=" + label;
+
+                //string urlPath = $"{this.options.ImageServiceCustomListPathV2}{"/Add"}";
+                string urlPath = $"{this.options.ImageServiceCustomListPathV2}{string.Format("/Image/Add{0}", string.IsNullOrWhiteSpace(queryParam) ? string.Empty : queryParam)}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.ImageServiceCustomListKeyV2);
+
+                ImageAddRequest request = new ImageAddRequest(imageContent);
+                if (imageContent.BinaryContent == null)
+                {
+                    message.Content = new StringContent(
+                        JsonConvert.SerializeObject(request),
+                        Encoding.UTF8,
+                        "application/json");
+                }
+                else
+                {
+                    message.Content = new StreamContent(imageContent.BinaryContent.Stream);
+                    message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
+                }
+
+                return await this.SendRequest<ImageAddResult>(client, message);
+            }
+        }
+
+        /// <summary>
         /// Refresh the image Index. This api needs to be called after adding an image into the image list.
         /// </summary>
         /// <returns>Add Image response</returns>
@@ -292,7 +386,24 @@ namespace ContentModeratorSDK.Service
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceCustomListKey);
+                return await this.SendRequest<ImageRefreshIndexResult>(client, message);
+            }
+        }
 
+        /// <summary>
+        /// Refresh the image Index. This api needs to be called after adding an image into the image list.
+        /// </summary>
+        /// <returns>Add Image response</returns>
+        public async Task<ImageRefreshIndexResult> RefreshImageIndexV2Async()
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+
+                string urlPath = $"{this.options.ImageServiceCustomListPathV2}{"/HashIndex/Refresh"}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.ImageServiceCustomListKeyV2);
                 return await this.SendRequest<ImageRefreshIndexResult>(client, message);
             }
         }
@@ -309,7 +420,8 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.ImageServicePath}{"/Image/ExtractText"}{"?language="}{language}";
+                //string urlPath = $"{this.options.ImageServicePath}{"/Image/ExtractText"}{"?language="}{language}";
+                string urlPath = $"{this.options.ImageServicePath}{"/OCR"}{"?language="}{language}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -330,6 +442,148 @@ namespace ContentModeratorSDK.Service
                 }
 
                 return await this.SendRequest<ExtractTextResult>(client, message);
+            }
+        }
+
+        /// <summary>
+        /// Call Evaluate Image, to determine whether the image violates any policy
+        /// </summary>
+        /// <param name="imageContent">Image Content</param>
+        /// <returns>Evaluate result</returns>
+        public async Task<ExtractTextResult> ExtractTextAsyncV2(ImageModeratableContent imageContent, string language = "eng", bool cacheContent = false)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/DetectTextEnhanced{0}", cacheContent ? "?cacheImage=true" : string.Empty)}{"&language="}{language}";
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/OCR{0}", cacheContent ? "?cacheImage=true" : string.Empty)}{"&language="}{language}";
+                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/OCR?language={0}{1}", language, cacheContent ? "&cacheImage=true" : string.Empty)}";//{"&language="}{language}
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.ImageServiceKey);
+                message.Headers.Add("language", "eng");
+                //message.Headers.Add("x-contentsources", "3061");
+                ExtractTextRequest request = new ExtractTextRequest(imageContent);
+
+                if (imageContent.BinaryContent == null)
+                {
+                    message.Content = new StringContent(
+                        JsonConvert.SerializeObject(request),
+                        Encoding.UTF8,
+                        "application/json");
+                }
+                else
+                {
+                    message.Content = new StreamContent(imageContent.BinaryContent.Stream);
+                    message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
+                }
+
+                return await this.SendRequest<ExtractTextResult>(client, message);
+            }
+        }
+
+        public async Task<ExtractTextResult> ExtractTextInCache(string cacheId)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/DetectTextEnhanced?CacheID={0}", cacheId)}";
+                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/OCR?CacheID={0}", cacheId)}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
+
+                this.Addkey(message, this.options.ImageServiceKey);
+                return await this.SendRequest<ExtractTextResult>(client, message);
+            }
+        }
+
+        /// <summary>
+        /// Call Evaluate Image, to determine whether the image violates any policy
+        /// </summary>
+        /// <param name="imageContent">Image Content</param>
+        /// <returns>Evaluate result</returns>
+        public async Task<DetectFaceResult> DetectFaceAsync(ImageModeratableContent imageContent, bool cacheContent = false)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+                //string urlPath = $"{this.options.ImageServicePath}{string.Format("/Image/DetectFaces{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Faces{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.ImageServiceKey);
+                DetectFaceRequest request = new DetectFaceRequest(imageContent);
+
+                if (imageContent.BinaryContent == null)
+                {
+                    message.Content = new StringContent(
+                        JsonConvert.SerializeObject(request),
+                        Encoding.UTF8,
+                        "application/json");
+                }
+                else
+                {
+                    message.Content = new StreamContent(imageContent.BinaryContent.Stream);
+                    message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
+                }
+
+                return await this.SendRequest<DetectFaceResult>(client, message);
+            }
+        }
+
+        public async Task<DetectFaceResult> DetectFaceInCache(string cacheId)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Faces?CacheID={0}", cacheId)}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
+
+                this.Addkey(message, this.options.ImageServiceKey);
+                return await this.SendRequest<DetectFaceResult>(client, message);
+            }
+        }
+
+        public async Task<BaseModeratorResult> CacheImageContent(ImageModeratableContent imageContent)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+                string urlPath = $"{this.options.ImageCachingPath}{string.Format("/")}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.ImageCachingKey);
+                
+                BaseImageRequest request = new BaseImageRequest(imageContent);
+
+                if (imageContent.BinaryContent == null)
+                {
+                    message.Content = new StringContent(
+                        JsonConvert.SerializeObject(request),
+                        Encoding.UTF8,
+                        "application/json");
+                }
+                else
+                {
+                    message.Content = new StreamContent(imageContent.BinaryContent.Stream);
+                    message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
+                }
+
+                return await this.SendRequest<BaseModeratorResult>(client, message);
+            }
+        }
+
+        public async Task<BaseModeratorResult> UnCacheImageContent(string cacheId)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+                //string urlPath = $"{this.options.ImageCachingPath}{string.Format("/Image/Cache")}";
+                string urlPath = $"{this.options.ImageCachingPath}{string.Format("?CacheID={0}", cacheId)}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Delete, urlPath);
+
+                this.Addkey(message, this.options.ImageCachingKey);
+
+                return await this.SendRequest<BaseModeratorResult>(client, message);
             }
         }
 

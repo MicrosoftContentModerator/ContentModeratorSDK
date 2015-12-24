@@ -29,7 +29,15 @@ namespace ContentModeratorSDK
         /// </summary>
         /// <param name="imageContent">Image Content</param>
         /// <returns>Evaluate result</returns>
-        Task<EvaluateImageResult> EvaluateImageWithMultipleRatingsAsync(ImageModeratableContent imageContent);
+        Task<EvaluateImageResult> EvaluateImageWithMultipleRatingsAsync(ImageModeratableContent imageContent, bool cacheContent = false);
+
+        /// <summary>
+        /// Call Evaluate Image in Cache, to determine whether the image violates any policy based
+        ///  on multiple ratings.
+        /// </summary>
+        /// <param name="cacheId">cached image id</param>
+        /// <returns>Evaluate result</returns>
+        Task<EvaluateImageResult> EvaluateImageInCache(string cacheId);
 
         /// <summary>
         /// Match an image against the images uploaded to the Image List
@@ -39,11 +47,29 @@ namespace ContentModeratorSDK
         Task<MatchImageResult> MatchImageAsync(ImageModeratableContent imageContent);
 
         /// <summary>
+        /// Match an image against the images uploaded to the Image List
+        /// </summary>
+        /// <param name="imageContent">Image to match</param>
+        /// <param name="cacheContent">Cache Image content</param>
+        /// <returns>Match response</returns>
+        Task<MatchImageResult> MatchImageAsyncV2(ImageModeratableContent imageContent, bool cacheContent = false);
+
+        /// <summary>
         /// Add an image into the Image list
         /// </summary>
         /// <param name="imageContent">Image Content</param>
         /// <returns>Immage add result</returns>
         Task<ImageAddResult> ImageAddAsync(ImageModeratableContent imageContent);
+
+        /// <summary>
+        /// Add an image into the Image list
+        /// </summary>
+        /// <param name="imageContent">Image Content</param>
+        /// <param name="tag">Image policies</param>
+        /// <param name="label">Image description</param>
+        /// <param name="csId">CustomSourceId</param>
+        /// <returns>Immage add result</returns>
+        Task<ImageAddResult> ImageAddAsyncV2(ImageModeratableContent imageContent, string tag, string label);
 
         /// <summary>
         /// Screen Text against the term list. Note that Import Term List needs to be run
@@ -72,12 +98,55 @@ namespace ContentModeratorSDK
         Task<ImageRefreshIndexResult> RefreshImageIndexAsync();
 
         /// <summary>
+        /// Refresh the image Index. This api needs to be called after adding an image into the image list.
+        /// </summary>
+        /// <returns>Add Image response</returns>
+        Task<ImageRefreshIndexResult> RefreshImageIndexV2Async();
+
+        /// <summary>
         /// Call Evaluate Image, to determine whether the image violates any policy
         /// </summary>
         /// <param name="imageContent">Image Content</param>
         /// <returns>Evaluate result</returns>
         Task<ExtractTextResult> ExtractTextAsync(ImageModeratableContent imageContent, string language);
 
+        /// <summary>
+        /// Call Detect Text enhanced, to determine whether the image contains any text violates any policy based
+        ///  on multiple ratings.
+        /// </summary>
+        /// <param name="imageContent">Image Content</param>
+        /// <returns>Extract text result</returns>
+        Task<ExtractTextResult> ExtractTextAsyncV2(ImageModeratableContent imageContent, string language = "eng", bool cacheContent = false);
+
+        /// <summary>
+        /// Call Detect Text enhanced in Cache, to determine whether the image contains any text violates any policy based
+        ///  on multiple ratings.
+        /// </summary>
+        /// <param name="cacheId">Cache Id</param>
+        /// <returns>Extract text result</returns>
+        Task<ExtractTextResult> ExtractTextInCache(string cacheId);
+
+        /// <summary>
+        /// Detect faces in the image content
+        /// </summary>
+        /// <param name="imageContent">Image content</param>
+        /// <param name="cacheContent">Cache Image content</param>
+        /// <returns>Detect Face result</returns>
+        Task<DetectFaceResult> DetectFaceAsync(ImageModeratableContent imageContent, bool cacheContent = false);
+
+        /// <summary>
+        /// Call Detect Faces in Cached image content.
+        /// </summary>
+        /// <param name="cacheId">cached image id</param>
+        /// <returns>Detect Face result</returns>
+        Task<DetectFaceResult> DetectFaceInCache(string cacheId);
+
+        ///// <summary>
+        ///// Call Detect faces in Cache.
+        ///// </summary>
+        ///// <param name="cacheId">Cache Id</param>
+        ///// <returns>Detect Face result</returns>
+        //Task<DetectFaceResult> DetectFaceInCache(string cacheId);
 
         /// <summary>
         /// Adds a term to the term list
@@ -110,5 +179,20 @@ namespace ContentModeratorSDK
         /// <param name="textContent"></param>
         /// <returns>Identified language</returns>
         Task<IdentifyLanguageResult> IdentifyLanguageAsync(TextModeratableContent textContent);
+
+        /// <summary>
+        /// Cache Image content for re-use.
+        /// </summary>
+        /// <param name="imageContent"></param>
+        /// <returns></returns>
+        Task<BaseModeratorResult> CacheImageContent(ImageModeratableContent imageContent);
+
+        /// <summary>
+        /// Cache Image content for re-use.
+        /// </summary>
+        /// <param name="imageContent"></param>
+        /// <returns></returns>
+        Task<BaseModeratorResult> UnCacheImageContent(string cacheId);
+
     }
 }

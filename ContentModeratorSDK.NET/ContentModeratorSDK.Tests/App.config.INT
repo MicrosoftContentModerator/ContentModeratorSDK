@@ -18,6 +18,6 @@
     <add key="ImageCachingPath" value="Image/Cache"/>
     <add key="ImageCachingKey" value=""/>
     <add key="PDNAImageServicePath" value="v1/ScanImage"/>
-    <add key="PDNAImageServiceKey" value="66fd6a2a5eb54dcc82a6cad074b10b8b"/>
+    <add key="PDNAImageServiceKey" value=""/>
   </appSettings>
 </configuration>

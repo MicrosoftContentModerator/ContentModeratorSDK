@@ -730,5 +730,56 @@ namespace ContentModeratorSDK.Service
         }
 
         #endregion
+
+        #region PDNA Apis
+        /// <summary>
+        /// Validate an image against the images in the PDNA DB
+        /// </summary>
+        /// <param name="imageContent">Image to match</param>
+        /// <param name="cacheContent">Cache Image content</param>
+        /// <returns>Match response</returns>
+        public async Task<MatchImageResult> ValidateImageAsync(ImageModeratableContent imageContent, bool cacheContent = false)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+
+                //string urlPath = $"{this.options.ImageServicePathV2}{"/Image/Match"}";
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/Match{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                string urlPath = $"{this.options.PDNAImageServicePath}{string.Format("/Validate{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+
+                this.Addkey(message, this.options.PDNAImageServiceKey);
+                MatchImageRequest request = new MatchImageRequest(imageContent);
+                if (imageContent.BinaryContent == null)
+                {
+                    message.Content = new StringContent(
+                        JsonConvert.SerializeObject(request),
+                        Encoding.UTF8,
+                        "application/json");
+                }
+                else
+                {
+                    message.Content = new StreamContent(imageContent.BinaryContent.Stream);
+                    message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
+                }
+
+                return await this.SendRequest<MatchImageResult>(client, message);
+            }
+        }
+
+        public async Task<MatchImageResult> ValidateImageInCache(string cacheId)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);
+                string urlPath = $"{this.options.PDNAImageServicePath}{string.Format("/Validate?CacheID={0}", cacheId)}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
+
+                this.Addkey(message, this.options.PDNAImageServiceKey);
+                return await this.SendRequest<MatchImageResult>(client, message);
+            }
+        }
+        #endregion
     }
 }

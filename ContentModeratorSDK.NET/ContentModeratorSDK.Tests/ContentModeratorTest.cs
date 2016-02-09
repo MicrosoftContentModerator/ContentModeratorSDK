@@ -56,6 +56,8 @@ namespace ContentModeratorSDK.Tests
                 ImageServiceCustomListPathV2 = ConfigurationManager.AppSettings["ImageServiceCustomListPathV2"],
                 ImageCachingKey = ConfigurationManager.AppSettings["ImageCachingKey"],
                 ImageCachingPath = ConfigurationManager.AppSettings["ImageCachingPath"],
+                PDNAImageServiceKey = ConfigurationManager.AppSettings["PDNAImageServiceKey"],
+                PDNAImageServicePath = ConfigurationManager.AppSettings["PDNAImageServicePath"],
             };
         }
 
@@ -493,6 +495,45 @@ namespace ContentModeratorSDK.Tests
             var actualResult = identifyLanguageResponse.Result;
             Assert.IsTrue(actualResult != null, "Expected valid result");
             Assert.AreEqual("spa", actualResult.DetectedLanguage, "Expected valid result");
+        }
+
+
+        //PDNA methods
+
+        /// <summary>
+        /// Detect faces from an image using OCR
+        /// </summary>
+        [TestMethod]
+        public void ValidateImageAndCacheTest()
+        {
+            IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
+            Service.Results.MatchImageResult extractResult = ValidateImageContent(moderatorService, true);
+
+            Assert.IsTrue(extractResult != null, "Expected valid result");
+            Assert.IsTrue(extractResult.IsMatch, "Expected valid result");
+            Assert.IsNotNull(extractResult.MatchDetails, "Expected valid result");
+        }
+
+        [TestMethod]
+        public void ValidateImageInCache()
+        {
+            IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
+            var actualResult = ValidateImageContent(moderatorService, true);
+
+            var moderateResult = moderatorService.ValidateImageInCache(actualResult.CacheID);
+            actualResult = moderateResult.Result;
+            Assert.IsTrue(actualResult != null, "Expected valid result");
+            Assert.IsTrue(actualResult.IsMatch, "Expected valid result");
+            Assert.IsNotNull(actualResult.MatchDetails, "Expected valid result");
+        }
+
+        private static Service.Results.MatchImageResult ValidateImageContent(IModeratorService moderatorService, bool cacheImage = false)
+        {
+            ImageModeratableContent imageContent =
+                new ImageModeratableContent("https://wbintcvsstorage.blob.core.windows.net/matchedimages/img_130.jpg");
+            var extractResponse = moderatorService.ValidateImageAsync(imageContent, true);
+            return extractResponse.Result;
+
         }
     }
 }

@@ -92,5 +92,7 @@ namespace ContentModeratorSDK.Service
         /// Key for PDNA image service
         /// </summary>
         public string PDNAImageServiceKey { get; set; }
+
+        public string TextContentSourceId { get; set; }
     }
 }

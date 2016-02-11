@@ -228,11 +228,11 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.TextServicePath}{$"/Text/Screen?language={language}"}";
+                string urlPath = $"{this.options.TextServicePath}{$"/Text/Screen?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.TextServiceKey);
-
+                // this.Addkey(message, this.options.TextServiceKey);
+                message.Headers.Add("x-contentsources", this.options.TextContentSourceId);
                 ScreenTextRequest request = new ScreenTextRequest(textContent);
                 message.Content = new StringContent(
                     JsonConvert.SerializeObject(request),
@@ -261,7 +261,7 @@ namespace ContentModeratorSDK.Service
 
                 this.Addkey(message, this.options.TextServiceKey);
 
-                
+                message.Headers.Add("x-contentsources", this.options.TextContentSourceId);
 
                 message.Content = new StringContent(
                     textContent.ContentAsString,
@@ -269,7 +269,7 @@ namespace ContentModeratorSDK.Service
                     "text/plain");
                 message.Content.Headers.ContentType.MediaType = "text/plain";
                 message.Content.Headers.ContentType.CharSet = null;
-                
+
                 return await this.SendRequest<ScreenTextResult>(client, message);
             }
         }
@@ -280,11 +280,11 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.TextServicePath}{$"/Language/Identify"}";
+                string urlPath = $"{this.options.TextServicePath}{$"/Text/IdentifyLanguage?subscription-key={this.options.TextServiceCustomListKey}"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.TextServiceKey);
-
+              //  this.Addkey(message, this.options.TextServiceKey);
+                message.Headers.Add("x-contentsources", this.options.TextContentSourceId);
                 IdentifyLanguageRequest request = new IdentifyLanguageRequest(textContent);
                 message.Content = new StringContent(
                     JsonConvert.SerializeObject(request),
@@ -593,24 +593,24 @@ namespace ContentModeratorSDK.Service
         /// <param name="textContent">Term text</param>
         /// <param name="language">Term language</param>
         /// <returns>Add Term Response</returns>
-        public async Task<AddTermResult> AddTermAsync(TextModeratableContent textContent, string language)
+        public async Task<HttpResponseMessage> AddTermAsync(TextModeratableContent textContent, string language)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 string urlPath =
-                    $"{this.options.TextServiceCustomListPath}{$"/{textContent.ContentAsString}?language={language}"}";
-                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Put, urlPath);
+                    $"{this.options.TextServiceCustomListPath}{$"/Text/Add/{textContent.ContentAsString}?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.TextServiceCustomListKey);
+                //this.Addkey(message, this.options.TextServiceCustomListKey);
 
-                AddTermRequest request = new AddTermRequest(textContent);
-                message.Content = new StringContent(
-                    JsonConvert.SerializeObject(request),
-                    Encoding.UTF8,
-                    "application/json");
-                return await this.SendRequest<AddTermResult>(client, message);
+                this.AddTextContentSourceKey(message, this.options.TextContentSourceId);
+
+                HttpResponseMessage response = await this.SendRequest(client, message);
+
+                return response;
+
             }
         }
 
@@ -626,7 +626,7 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 string urlPath =
-                    $"{this.options.TextServiceCustomListPath}{$"/Refreshindex?language={language}"}";
+                    $"{this.options.TextServiceCustomListPath}{$"/Text/Refreshindex?language={language}"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.TextServiceCustomListKey);
@@ -641,19 +641,20 @@ namespace ContentModeratorSDK.Service
         /// <param name="textContent">Text content</param>
         /// <param name="language">Language of term to remove</param>
         /// <returns></returns>
-        public async Task<RemoveTermResult> RemoveTermAsync(TextModeratableContent textContent, string language)
+        public async Task<HttpResponseMessage> RemoveTermAsync(TextModeratableContent textContent, string language)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 string urlPath =
-                    $"{this.options.TextServiceCustomListPath}{$"/{textContent.ContentAsString}?language={language}"}";
+                    $"{this.options.TextServiceCustomListPath}{$"/Text/{textContent.ContentAsString}?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Delete, urlPath);
 
-                this.Addkey(message, this.options.TextServiceCustomListKey);
+                // this.Addkey(message, this.options.TextServiceCustomListKey);
+                this.AddTextContentSourceKey(message, this.options.TextContentSourceId);
 
-                return await this.SendRequest<RemoveTermResult>(client, message);
+                return await this.SendRequest(client, message);
             }
         }
 
@@ -668,10 +669,12 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.TextServiceCustomListPath}{$"/Import?language={language}"}";
+                string urlPath = $"{this.options.TextServiceCustomListPath}{$"/Text/Import?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.TextServiceCustomListKey);
+                //this.Addkey(message, this.options.TextServiceCustomListKey);
+                this.AddTextContentSourceKey(message, this.options.TextContentSourceId);
+
 
                 return await SendRequest<ImportTermListResult>(client, message);
             }
@@ -707,6 +710,13 @@ namespace ContentModeratorSDK.Service
             return result;
         }
 
+        private async Task<HttpResponseMessage> SendRequest(HttpClient client, HttpRequestMessage message)
+        {
+            HttpResponseMessage response = await client.SendAsync(message);
+            response.EnsureSuccessStatusCode();
+            return response;
+        }
+
         /// <summary>
         /// Convert a response string to an object
         /// </summary>
@@ -727,6 +737,11 @@ namespace ContentModeratorSDK.Service
         private void Addkey(HttpRequestMessage message, string key)
         {
             message.Headers.Add("Ocp-Apim-Subscription-Key", key);
+        }
+
+        private void AddTextContentSourceKey(HttpRequestMessage message, string key)
+        {
+            message.Headers.Add("cs-id", key);
         }
 
         #endregion

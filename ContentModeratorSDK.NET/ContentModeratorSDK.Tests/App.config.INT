@@ -10,7 +10,8 @@
     <add key="ImageServicePathV2" value="Image/v2"/>
     <add key="TextServicePathV2" value="Text/v2"/>
     <add key="ImageServiceKey" value=""/>
-    <add key="TextServiceKey" value=""/>
+    <add key="TextServiceKey" value="7e58f40a83494929b54d91e926c6d230"/>
+    <add key="TextContentSourceId" value=""/>
     <add key="TextServiceCustomListKey" value=""/>
     <add key="ImageServiceCustomListKey" value=""/>
     <add key="ImageServiceCustomListPathV2" value="Image/Validate/v2"/>

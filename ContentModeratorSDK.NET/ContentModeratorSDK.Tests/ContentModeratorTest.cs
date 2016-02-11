@@ -44,7 +44,7 @@ namespace ContentModeratorSDK.Tests
                 ImageServiceCustomListPath = ConfigurationManager.AppSettings["ImageServiceCustomListPath"],
                 ImageServicePathV2 = ConfigurationManager.AppSettings["ImageServicePathV2"],
                 TextServicePathV2 = ConfigurationManager.AppSettings["TextServicePathV2"],
-
+                TextContentSourceId = ConfigurationManager.AppSettings["TextContentSourceId"],
                 // Input your keys after signing up for content moderator below
                 // Visit the API manager portal to get keys:
                 // https://developer.microsoftmoderator.com/docs/services?ref=mktg
@@ -463,10 +463,11 @@ namespace ContentModeratorSDK.Tests
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
 
             // We are creating a term "FakeProfanity" in english (thus provide tha same english translation), then matching against it.
-            TextModeratableContent textContent = new TextModeratableContent(text:"FakeProfanity", englishTranslation:"FakeProfanity");
+            TextModeratableContent textContent = new TextModeratableContent(text: "FakeProfanity", englishTranslation: "FakeProfanity");
             var taskResult = moderatorService.AddTermAsync(textContent, "eng");
+
             var actualResult = taskResult.Result;
-            Assert.IsTrue(actualResult != null, "Expected valid result for AddTerm");
+            Assert.IsTrue(actualResult.IsSuccessStatusCode, "Expected valid result for AddTerm");
 
             var refreshTask = moderatorService.RefreshTextIndexAsync("eng");
             var refreshResult = refreshTask.Result;
@@ -474,12 +475,12 @@ namespace ContentModeratorSDK.Tests
 
             var screenResponse = moderatorService.ScreenTextAsync(new TextModeratableContent("This is a FakeProfanity!"), "eng");
             var screenResult = screenResponse.Result;
-            Assert.IsTrue(screenResult.Urls != null, "Expected valid urls");
-            Assert.IsTrue(screenResult.Terms != null, "Expected valid terms");
+            // Assert.IsTrue(screenResult.Urls != null, "Expected valid urls");
+            Assert.IsTrue(screenResult.MatchDetails != null, "Expected valid terms");
 
             var deleteTask = moderatorService.RemoveTermAsync(textContent, "eng");
             var deleteResult = deleteTask.Result;
-            Assert.IsTrue(deleteResult != null, "Expected valid result for DeleteTerm");
+            Assert.IsTrue(deleteResult.IsSuccessStatusCode, "Expected valid result for DeleteTerm");
         }
 
         /// <summary>

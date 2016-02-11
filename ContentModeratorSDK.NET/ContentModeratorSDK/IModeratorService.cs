@@ -10,6 +10,7 @@ namespace ContentModeratorSDK
     using ContentModeratorSDK.Image;
     using ContentModeratorSDK.Service.Results;
     using ContentModeratorSDK.Text;
+    using System.Net.Http;
 
     /// <summary>
     /// Interface for moderator service
@@ -154,7 +155,7 @@ namespace ContentModeratorSDK
         /// <param name="textContent">Term text</param>
         /// <param name="language">Term language</param>
         /// <returns>Add Term Response</returns>
-        Task<AddTermResult> AddTermAsync(TextModeratableContent textContent, string language);
+        Task<HttpResponseMessage> AddTermAsync(TextModeratableContent textContent, string language);
 
         /// <summary>
         /// Refresh the text index. This method needs to be called after adding a text term.
@@ -169,7 +170,7 @@ namespace ContentModeratorSDK
         /// <param name="textContent">Text content</param>
         /// <param name="language">Language of term to remove</param>
         /// <returns></returns>
-        Task<RemoveTermResult> RemoveTermAsync(TextModeratableContent textContent, string language);
+        Task<HttpResponseMessage> RemoveTermAsync(TextModeratableContent textContent, string language);
 
         Task<ImportTermListResult> ImportTermListAsync(string language);
 

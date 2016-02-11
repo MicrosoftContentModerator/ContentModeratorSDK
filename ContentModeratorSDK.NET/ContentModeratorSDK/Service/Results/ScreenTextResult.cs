@@ -41,6 +41,6 @@ namespace ContentModeratorSDK.Service.Results
     {
         public int Adult;
         public int Malware;
-        public int Phishing;
+        public decimal Phishing;
     }
 }

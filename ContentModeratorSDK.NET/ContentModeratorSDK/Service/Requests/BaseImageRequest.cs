@@ -32,7 +32,7 @@ namespace ContentModeratorSDK.Service.Requests
         {
             if (imageContent == null)
             {
-                throw new ArgumentNullException(nameof(imageContent), "Input image content is null");
+                throw new ArgumentNullException("imageContent");
             }
 
             this.DataRepresentation = imageContent.DataRepresentation;

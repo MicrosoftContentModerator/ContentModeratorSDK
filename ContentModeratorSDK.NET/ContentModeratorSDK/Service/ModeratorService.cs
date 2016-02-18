@@ -47,12 +47,12 @@ namespace ContentModeratorSDK.Service
         {
             if (options == null)
             {
-                throw new ArgumentNullException(nameof(options), "Options parameter is null");
+                throw new ArgumentNullException("options");
             }
 
             if (options.HostUrl == null)
             {
-                throw new ArgumentNullException(nameof(options), "Options.HostUrl is null");
+                throw new ArgumentNullException("options");
             }
         }
 
@@ -71,7 +71,7 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 //string urlPath = $"{this.options.ImageServicePath}{"/Image/EvaluateImage"}";
-                string urlPath = $"{this.options.ImageServicePath}{"/Evaluate"}";
+                string urlPath = string.Format("{0}/Evaluate",this.options.ImageServicePath);// $"{this.options.ImageServicePath}{"/Evaluate"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -106,7 +106,10 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
                 //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/EvaluateImage{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
-                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Evaluate{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Evaluate{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                string urlPath =
+                    string.Format(string.Format("{0}/Evaluate{1}", this.options.ImageServicePathV2,
+                        cacheContent ? "?cacheImage=true" : string.Empty));
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -135,7 +138,8 @@ namespace ContentModeratorSDK.Service
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
-                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Evaluate?CacheID={0}", cacheId)}";
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Evaluate?CacheID={0}", cacheId)}";
+                string urlPath = string.Format("{0}/Evaluate?CacheID={1}", this.options.ImageServicePathV2, cacheId);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -155,7 +159,8 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 //string urlPath = $"{this.options.ImageServicePath}{"/Image/Match"}";
-                string urlPath = $"{this.options.ImageServicePath}{"/Match"}";
+                //string urlPath = $"{this.options.ImageServicePath}{"/Match"}";
+                string urlPath = string.Format("{0}/Match", this.options.ImageServicePath);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -192,7 +197,9 @@ namespace ContentModeratorSDK.Service
 
                 //string urlPath = $"{this.options.ImageServicePathV2}{"/Image/Match"}";
                 //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/Match{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
-                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Match{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Match{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                string urlPath = string.Format("{0}/Match{1}", this.options.ImageServicePathV2,
+                    cacheContent ? "?cacheImage=true" : string.Empty);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -228,8 +235,10 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.TextServicePath}{$"/Text/Screen?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
-                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
+                //string urlPath = $"{this.options.TextServicePath}{$"/Text/Screen?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
+                string urlPath = string.Format("{0}/Text/Screen?language={1}&subscription-key={2}",
+                    this.options.TextServicePath, language, this.options.TextServiceCustomListKey);
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 // this.Addkey(message, this.options.TextServiceKey);
                 message.Headers.Add("x-contentsources", this.options.TextContentSourceId);
@@ -256,7 +265,8 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.TextServicePathV2}{$"/Screen?language={language}"}";
+                //string urlPath = $"{this.options.TextServicePathV2}{$"/Screen?language={language}"}";
+                string urlPath = string.Format("{0}/Screen?language={1}", this.options.TextServicePathV2, language);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.TextServiceKey);
@@ -280,7 +290,8 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.TextServicePath}{$"/Text/IdentifyLanguage?subscription-key={this.options.TextServiceCustomListKey}"}";
+                //string urlPath = $"{this.options.TextServicePath}{$"/Text/IdentifyLanguage?subscription-key={this.options.TextServiceCustomListKey}"}";
+            string urlPath = string.Format("{0}/Text/IdentifyLanguage?subscription-key={1}",this.options.TextServicePath,this.options.TextServiceCustomListKey);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
               //  this.Addkey(message, this.options.TextServiceKey);
@@ -306,7 +317,8 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.ImageServiceCustomListPath}{"/Image/Add"}";
+                //string urlPath = $"{this.options.ImageServiceCustomListPath}{"/Image/Add"}";
+                string urlPath = string.Format("{0}/Image/Add", this.options.ImageServiceCustomListPath);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceCustomListKey);
@@ -349,7 +361,8 @@ namespace ContentModeratorSDK.Service
                     queryParam = queryParam + "&label=" + label;
 
                 //string urlPath = $"{this.options.ImageServiceCustomListPathV2}{"/Add"}";
-                string urlPath = $"{this.options.ImageServiceCustomListPathV2}{string.Format("/Image/Add{0}", string.IsNullOrWhiteSpace(queryParam) ? string.Empty : queryParam)}";
+                //string urlPath = $"{this.options.ImageServiceCustomListPathV2}{string.Format("/Image/Add{0}", string.IsNullOrWhiteSpace(queryParam) ? string.Empty : queryParam)}";
+                string urlPath = string.Format("{0}/Image/Add{1}",this.options.ImageServiceCustomListPathV2, string.IsNullOrWhiteSpace(queryParam) ? string.Empty : queryParam);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceCustomListKeyV2);
@@ -382,7 +395,8 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.ImageServiceCustomListPath}{"/HashIndex/Refresh"}";
+                //string urlPath = $"{this.options.ImageServiceCustomListPath}{"/HashIndex/Refresh"}";
+                string urlPath = string.Format("{0}/HashIndex/Refresh",this.options.ImageServiceCustomListPath);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceCustomListKey);
@@ -400,7 +414,8 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.ImageServiceCustomListPathV2}{"/HashIndex/Refresh"}";
+                //string urlPath = $"{this.options.ImageServiceCustomListPathV2}{"/HashIndex/Refresh"}";
+                string urlPath = string.Format("{0}/HashIndex/Refresh",this.options.ImageServiceCustomListPathV2);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceCustomListKeyV2);
@@ -421,7 +436,8 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 //string urlPath = $"{this.options.ImageServicePath}{"/Image/ExtractText"}{"?language="}{language}";
-                string urlPath = $"{this.options.ImageServicePath}{"/OCR"}{"?language="}{language}";
+                //string urlPath = $"{this.options.ImageServicePath}{"/OCR"}{"?language="}{language}";
+                string urlPath = string.Format("{0}/OCR?language={1}", this.options.ImageServicePath, language);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -457,7 +473,9 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
                 //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/DetectTextEnhanced{0}", cacheContent ? "?cacheImage=true" : string.Empty)}{"&language="}{language}";
                 //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/OCR{0}", cacheContent ? "?cacheImage=true" : string.Empty)}{"&language="}{language}";
-                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/OCR?language={0}{1}", language, cacheContent ? "&cacheImage=true" : string.Empty)}";//{"&language="}{language}
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/OCR?language={0}{1}", language, cacheContent ? "&cacheImage=true" : string.Empty)}";//{"&language="}{language}
+                string urlPath = string.Format("{0}/OCR?language={1}{2}", this.options.ImageServicePathV2, language,
+                    cacheContent ? "&cacheImage=true" : string.Empty);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -488,7 +506,8 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
                 //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/DetectTextEnhanced?CacheID={0}", cacheId)}";
-                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/OCR?CacheID={0}", cacheId)}";
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/OCR?CacheID={0}", cacheId)}";
+                string urlPath = string.Format("{0}/OCR?CacheID={1}", this.options.ImageServicePathV2, cacheId);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -507,7 +526,9 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
                 //string urlPath = $"{this.options.ImageServicePath}{string.Format("/Image/DetectFaces{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
-                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Faces{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Faces{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                string urlPath = string.Format("{0}/Faces{1}", this.options.ImageServicePathV2,
+                    cacheContent ? "?cacheImage=true" : string.Empty);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -535,7 +556,8 @@ namespace ContentModeratorSDK.Service
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
-                string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Faces?CacheID={0}", cacheId)}";
+                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Faces?CacheID={0}", cacheId)}";
+                string urlPath = string.Format("{0}/Faces?CacheID={1}", this.options.ImageServicePathV2, cacheId);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
 
                 this.Addkey(message, this.options.ImageServiceKey);
@@ -548,7 +570,8 @@ namespace ContentModeratorSDK.Service
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
-                string urlPath = $"{this.options.ImageCachingPath}{string.Format("/")}";
+                //string urlPath = $"{this.options.ImageCachingPath}{string.Format("/")}";
+                string urlPath = string.Format("{0}/",this.options.ImageCachingPath);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.ImageCachingKey);
@@ -578,7 +601,8 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
                 //string urlPath = $"{this.options.ImageCachingPath}{string.Format("/Image/Cache")}";
-                string urlPath = $"{this.options.ImageCachingPath}{string.Format("?CacheID={0}", cacheId)}";
+                //string urlPath = $"{this.options.ImageCachingPath}{string.Format("?CacheID={0}", cacheId)}";
+                string urlPath = string.Format("{0}?CacheID={1}", this.options.ImageCachingPath, cacheId);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Delete, urlPath);
 
                 this.Addkey(message, this.options.ImageCachingKey);
@@ -599,8 +623,11 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath =
-                    $"{this.options.TextServiceCustomListPath}{$"/Text/Add/{textContent.ContentAsString}?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
+                //string urlPath =
+                    //$"{this.options.TextServiceCustomListPath}{$"/Text/Add/{textContent.ContentAsString}?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
+                string urlPath = string.Format("{0}/Text/Add/{1}?language={2}&subscription-key={3}",
+                    this.options.TextServiceCustomListPath, textContent.ContentAsString, language,
+                    this.options.TextServiceCustomListKey);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 //this.Addkey(message, this.options.TextServiceCustomListKey);
@@ -625,8 +652,10 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath =
-                    $"{this.options.TextServiceCustomListPath}{$"/Text/Refreshindex?language={language}"}";
+                //string urlPath =
+                //    $"{this.options.TextServiceCustomListPath}{$"/Text/Refreshindex?language={language}"}";
+                string urlPath = string.Format("{0}/Text/Refreshindex?language={1}",
+                    this.options.TextServiceCustomListPath, language);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.TextServiceCustomListKey);
@@ -647,8 +676,11 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath =
-                    $"{this.options.TextServiceCustomListPath}{$"/Text/{textContent.ContentAsString}?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
+                //string urlPath =
+                //    $"{this.options.TextServiceCustomListPath}{$"/Text/{textContent.ContentAsString}?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
+                string urlPath = string.Format("{0}/Text/{1}?language={2}&subscription-key={3}",
+                    this.options.TextServiceCustomListPath, textContent.ContentAsString, language,
+                    this.options.TextServiceCustomListKey);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Delete, urlPath);
 
                 // this.Addkey(message, this.options.TextServiceCustomListKey);
@@ -669,7 +701,9 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                string urlPath = $"{this.options.TextServiceCustomListPath}{$"/Text/Import?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
+                //string urlPath = $"{this.options.TextServiceCustomListPath}{$"/Text/Import?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
+                string urlPath = string.Format("{0}/Text/Import?language={1}&subscription-key={2}",
+                    this.options.TextServiceCustomListPath, language, this.options.TextServiceCustomListKey);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 //this.Addkey(message, this.options.TextServiceCustomListKey);
@@ -761,7 +795,9 @@ namespace ContentModeratorSDK.Service
 
                 //string urlPath = $"{this.options.ImageServicePathV2}{"/Image/Match"}";
                 //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/Match{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
-                string urlPath = $"{this.options.PDNAImageServicePath}{string.Format("/Validate{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                //string urlPath = $"{this.options.PDNAImageServicePath}{string.Format("/Validate{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
+                string urlPath = string.Format("{0}/Validate{1}", this.options.PDNAImageServicePath,
+                    cacheContent ? "?cacheImage=true" : string.Empty);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
                 this.Addkey(message, this.options.PDNAImageServiceKey);
@@ -788,7 +824,8 @@ namespace ContentModeratorSDK.Service
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
-                string urlPath = $"{this.options.PDNAImageServicePath}{string.Format("/Validate?CacheID={0}", cacheId)}";
+                //string urlPath = $"{this.options.PDNAImageServicePath}{string.Format("/Validate?CacheID={0}", cacheId)}";
+                string urlPath = string.Format("{0}/Validate?CacheID={1}", this.options.PDNAImageServicePath, cacheId);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
 
                 this.Addkey(message, this.options.PDNAImageServiceKey);

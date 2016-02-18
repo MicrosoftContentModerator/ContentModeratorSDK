@@ -18,7 +18,7 @@ namespace ContentModeratorSDK.Service.Requests
         {
             if (textContent == null)
             {
-                throw new ArgumentNullException(nameof(textContent), "Input text content is null");
+                throw new ArgumentNullException("textContent");
             }
 
             this.DataRepresentation = textContent.DataRepresentation;

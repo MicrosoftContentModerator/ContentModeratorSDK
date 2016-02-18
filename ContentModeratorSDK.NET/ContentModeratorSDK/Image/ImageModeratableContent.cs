@@ -13,14 +13,14 @@ namespace ContentModeratorSDK.Image
     /// </summary>
     public class ImageModeratableContent : IModeratableContent
     {
-        private DataRepresentationType DataRepresentationType { get; }
+        private DataRepresentationType DataRepresentationType { get; set; }
 
         /// <summary>
         /// Content of image as string
         /// </summary>
-        public string ContentAsString { get; }
+        public string ContentAsString { get; private set; }
 
-        public BinaryContent BinaryContent { get; }
+        public BinaryContent BinaryContent { get; private set; }
 
         /// <summary>
         /// Constructor, taking as input a url
@@ -39,8 +39,8 @@ namespace ContentModeratorSDK.Image
 
         /// <summary>
         /// Data representation of image
-        /// </susmmary>
-        public string DataRepresentation => this.DataRepresentationType.ToString();
+        /// </summary>
+        public string DataRepresentation { get { return this.DataRepresentationType.ToString(); } }
     }
 
     /// <summary>

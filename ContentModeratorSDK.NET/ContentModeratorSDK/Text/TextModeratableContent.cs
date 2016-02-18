@@ -21,21 +21,29 @@ namespace ContentModeratorSDK.Text
         /// <summary>
         /// How text is represented. 
         /// </summary>
-        private DataRepresentationType DataRepresentationType { get; }
+        private DataRepresentationType DataRepresentationType { get; set; }
+
+        public string DataRepresentation { get; private set; }
 
         /// <summary>
         /// Text content
         /// </summary>
-        public string ContentAsString { get; }
+        public string ContentAsString { get; set; }
 
         /// <summary>
         /// Text representation
         /// </summary>
-        public string DataRepresentation => this.DataRepresentationType.ToString();
+        //public string DataRepresentation => this.DataRepresentationType.ToString();
+        public string DataReperesentation {
+            get
+            {
+                return this.DataRepresentationType.ToString();
+            } 
+        }
 
         /// <summary>
         /// English translation
         /// </summary>
-        public string EnglishTranslation { get; }
+        public string EnglishTranslation { get; private set; }
     }
 }

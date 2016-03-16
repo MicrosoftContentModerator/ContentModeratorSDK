@@ -45,14 +45,14 @@ namespace ContentModeratorSDK.Tests
                 ImageServicePathV2 = ConfigurationManager.AppSettings["ImageServicePathV2"],
                 TextServicePathV2 = ConfigurationManager.AppSettings["TextServicePathV2"],
                 TextContentSourceId = ConfigurationManager.AppSettings["TextContentSourceId"],
+
                 // Input your keys after signing up for content moderator below
                 // Visit the API manager portal to get keys:
                 // https://developer.microsoftmoderator.com/docs/services?ref=mktg
                 ImageServiceKey = ConfigurationManager.AppSettings["ImageServiceKey"],
                 TextServiceKey = ConfigurationManager.AppSettings["TextServiceKey"],
                 TextServiceCustomListKey = ConfigurationManager.AppSettings["TextServiceCustomListKey"],
-                ImageServiceCustomListKey = ConfigurationManager.AppSettings["ImageServiceCustomListKey"],
-                ImageServiceCustomListKeyV2 = ConfigurationManager.AppSettings["ImageServiceCustomListKeyV2"],
+                ImageServiceCustomListKey = ConfigurationManager.AppSettings["ImageServiceCustomListKey"],                
                 ImageServiceCustomListPathV2 = ConfigurationManager.AppSettings["ImageServiceCustomListPathV2"],
                 ImageCachingKey = ConfigurationManager.AppSettings["ImageCachingKey"],
                 ImageCachingPath = ConfigurationManager.AppSettings["ImageCachingPath"],

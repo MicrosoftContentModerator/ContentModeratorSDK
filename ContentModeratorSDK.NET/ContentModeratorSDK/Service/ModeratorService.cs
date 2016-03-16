@@ -365,7 +365,7 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/Image/Add{1}",this.options.ImageServiceCustomListPathV2, string.IsNullOrWhiteSpace(queryParam) ? string.Empty : queryParam);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceCustomListKeyV2);
+                this.Addkey(message, this.options.ImageServiceCustomListKey);
 
                 ImageAddRequest request = new ImageAddRequest(imageContent);
                 if (imageContent.BinaryContent == null)
@@ -418,7 +418,7 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/HashIndex/Refresh",this.options.ImageServiceCustomListPathV2);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceCustomListKeyV2);
+                this.Addkey(message, this.options.ImageServiceCustomListKey);
                 return await this.SendRequest<ImageRefreshIndexResult>(client, message);
             }
         }

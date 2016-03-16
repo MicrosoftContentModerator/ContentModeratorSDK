@@ -51,12 +51,7 @@ namespace ContentModeratorSDK.Service
         /// <summary>
         /// Key for custom image service
         /// </summary>
-        public string ImageServiceCustomListKey { get; set; }
-
-        /// <summary>
-        /// Key for custom image service
-        /// </summary>
-        public string ImageServiceCustomListKeyV2 { get; set; }
+        public string ImageServiceCustomListKey { get; set; }       
 
         /// <summary>
         /// Url Path for custom text list service

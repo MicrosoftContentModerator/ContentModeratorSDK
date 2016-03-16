@@ -66,6 +66,7 @@ namespace ContentModeratorSDK.Tests
         /// as well as a flag indicating whether evaluation was successful.
         /// </summary>
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void EvaluateImageUrlTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -85,6 +86,7 @@ namespace ContentModeratorSDK.Tests
         /// as well as a flag indicating whether evaluation was successful.
         /// </summary>
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void EvaluateImageContentTest()
         {
             using (Stream stream = new FileStream(TestImageContent, FileMode.Open, FileAccess.Read))
@@ -113,6 +115,7 @@ namespace ContentModeratorSDK.Tests
         /// is racy and/or adult.
         /// </summary>
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void EvaluateImageUrlV2Test()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -135,6 +138,7 @@ namespace ContentModeratorSDK.Tests
         /// is racy and/or adult.
         /// </summary>
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void EvaluateImageContentV2Test()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -165,6 +169,7 @@ namespace ContentModeratorSDK.Tests
         /// is racy and/or adult.
         /// </summary>
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void EvaluateImageContentV2AndCacheTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -177,6 +182,7 @@ namespace ContentModeratorSDK.Tests
         }
 
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void EvaluateImageInCache()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -191,6 +197,7 @@ namespace ContentModeratorSDK.Tests
         }
 
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void CacheImage()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -200,6 +207,7 @@ namespace ContentModeratorSDK.Tests
         }
 
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void UnCacheImage()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -228,6 +236,7 @@ namespace ContentModeratorSDK.Tests
         /// Add Image to image list, then verify it is matched after it was added.
         /// </summary>
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void AddImageTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -264,6 +273,7 @@ namespace ContentModeratorSDK.Tests
         /// Add Image to image list, then verify it is matched after it was added.
         /// </summary>
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void AddImageV2Test()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -300,6 +310,7 @@ namespace ContentModeratorSDK.Tests
         /// Extract the text from an image using OCR
         /// </summary>
         [TestMethod]
+        [TestCategory("TextSvc")]
         public void ExtractTextTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -328,6 +339,7 @@ namespace ContentModeratorSDK.Tests
         /// Extract the text from an image using OCR
         /// </summary>
         [TestMethod]
+        [TestCategory("TextSvc")]
         public void ExtractTextV2AndCacheTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -341,6 +353,7 @@ namespace ContentModeratorSDK.Tests
         }
 
         [TestMethod]
+        [TestCategory("TextSvc")]
         public void ExtractTextInCache()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -369,6 +382,7 @@ namespace ContentModeratorSDK.Tests
         /// Detect faces from an image using OCR
         /// </summary>
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void DetectFaceV2AndCacheTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -380,6 +394,7 @@ namespace ContentModeratorSDK.Tests
         }
 
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void DetectFaceInCache()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -407,6 +422,7 @@ namespace ContentModeratorSDK.Tests
         /// Screen text against the default list of terms for english. Validate that the text is matched.
         /// </summary>
         [TestMethod]
+        [TestCategory("TextSvc")]
         public void ScreenTextV2Test()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -431,6 +447,7 @@ namespace ContentModeratorSDK.Tests
         /// Screen text against the default list of terms for english. Validate that the text is matched.
         /// </summary>
         [TestMethod]
+        [TestCategory("TextSvc")]
         public void ScreenTextTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -458,6 +475,7 @@ namespace ContentModeratorSDK.Tests
         /// Add a term to the list, and validate we are able to match to it
         /// </summary>
         [TestMethod]
+        [TestCategory("TextSvc")]
         public void AddTermTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -487,6 +505,7 @@ namespace ContentModeratorSDK.Tests
         /// Identify the language of an input text
         /// </summary>
         [TestMethod]
+        [TestCategory("TextSvc")]
         public void IdentifyLanguageTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -505,6 +524,7 @@ namespace ContentModeratorSDK.Tests
         /// Detect faces from an image using OCR
         /// </summary>
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void ValidateImageAndCacheTest()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
@@ -516,6 +536,7 @@ namespace ContentModeratorSDK.Tests
         }
 
         [TestMethod]
+        [TestCategory("ImageSvc")]
         public void ValidateImageInCache()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);

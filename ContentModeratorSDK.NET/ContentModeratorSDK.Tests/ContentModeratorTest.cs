@@ -54,7 +54,7 @@ namespace ContentModeratorSDK.Tests
                 TextServiceCustomListKey = ConfigurationManager.AppSettings["TextServiceCustomListKey"],
                 ImageServiceCustomListKey = ConfigurationManager.AppSettings["ImageServiceCustomListKey"],                
                 ImageServiceCustomListPathV2 = ConfigurationManager.AppSettings["ImageServiceCustomListPathV2"],
-                ImageCachingKey = ConfigurationManager.AppSettings["ImageCachingKey"],
+               
                 ImageCachingPath = ConfigurationManager.AppSettings["ImageCachingPath"],
                 PDNAImageServiceKey = ConfigurationManager.AppSettings["PDNAImageServiceKey"],
                 PDNAImageServicePath = ConfigurationManager.AppSettings["PDNAImageServicePath"],

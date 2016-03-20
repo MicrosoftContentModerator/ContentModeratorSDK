@@ -79,6 +79,9 @@
     <Compile Include="IContentModerator.cs" />
     <Compile Include="Image\ImageContentModerator.cs" />
     <Compile Include="Image\ImageModeratableContent.cs" />
+    <Compile Include="IPDNAService.cs" />
+    <Compile Include="Service\PDNAService.cs" />
+    <Compile Include="Service\PDNAServiceOptions.cs" />
     <Compile Include="Service\Requests\DetectFaceRequest.cs" />
     <Compile Include="Service\Requests\ExtractTextRequest.cs" />
     <Compile Include="Service\Requests\IdentifyLanguageRequest.cs" />
@@ -110,6 +113,7 @@
     <Compile Include="Service\Results\ImageRefreshIndexResult.cs" />
     <Compile Include="Service\Results\MatchImageResult.cs" />
     <Compile Include="Service\Results\ScreenTextResult.cs" />
+    <Compile Include="Service\ServiceHelpers.cs" />
     <Compile Include="Text\TextModeratableContent.cs" />
   </ItemGroup>
   <ItemGroup>

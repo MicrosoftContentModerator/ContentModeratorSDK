@@ -23,7 +23,10 @@ namespace ContentModeratorSDK.Text
         /// </summary>
         private DataRepresentationType DataRepresentationType { get; set; }
 
-        public string DataRepresentation { get; private set; }
+        /// <summary>
+        /// Data representation of text
+        /// </summary>
+        public string DataRepresentation { get { return this.DataRepresentationType.ToString(); } }
 
         /// <summary>
         /// Text content

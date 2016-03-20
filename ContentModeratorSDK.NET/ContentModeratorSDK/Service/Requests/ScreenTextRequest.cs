@@ -17,7 +17,7 @@ namespace ContentModeratorSDK.Service.Requests
         public ScreenTextRequest(TextModeratableContent content)
             : base(content)
         {
-            this.Metadata = new string[] { };
+            this.Metadata = new string[] { };            
         }
 
         public string[] Metadata { get; private set; }

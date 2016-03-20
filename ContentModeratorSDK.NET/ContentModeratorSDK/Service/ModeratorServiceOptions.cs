@@ -73,20 +73,8 @@ namespace ContentModeratorSDK.Service
         /// </summary>
         public string ImageCachingPath { get; set; }
 
-        /// <summary>
-        /// Key for Image caching API.
-        /// </summary>
-        public string ImageCachingKey { get; set; }
-
-        /// <summary>
-        /// Url Path to PDNA image service
-        /// </summary>
-        public string PDNAImageServicePath { get; set; }
-
-        /// <summary>
-        /// Key for PDNA image service
-        /// </summary>
-        public string PDNAImageServiceKey { get; set; }
+        
+        
 
         public string TextContentSourceId { get; set; }
     }

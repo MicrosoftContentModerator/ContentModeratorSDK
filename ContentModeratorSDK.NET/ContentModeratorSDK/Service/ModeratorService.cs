@@ -71,10 +71,10 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 //string urlPath = $"{this.options.ImageServicePath}{"/Image/EvaluateImage"}";
-                string urlPath = string.Format("{0}/Evaluate",this.options.ImageServicePath);// $"{this.options.ImageServicePath}{"/Evaluate"}";
+                string urlPath = string.Format("{0}/EvaluateImage",this.options.ImageServicePath);// $"{this.options.ImageServicePath}{"/Evaluate"}";
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
 
                 EvaluateImageRequest request = new EvaluateImageRequest(imageContent);
 
@@ -91,7 +91,7 @@ namespace ContentModeratorSDK.Service
                     message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
                 }
 
-                return await this.SendRequest<EvaluateImageResult>(client, message);
+                return await ServiceHelpers.SendRequest<EvaluateImageResult>(client, message);
             }
         }
 
@@ -112,7 +112,7 @@ namespace ContentModeratorSDK.Service
                         cacheContent ? "?cacheImage=true" : string.Empty));
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
 
                 EvaluateImageRequest request = new EvaluateImageRequest(imageContent);
 
@@ -129,7 +129,7 @@ namespace ContentModeratorSDK.Service
                     message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
                 }
 
-                return await this.SendRequest<EvaluateImageResult>(client, message);
+                return await ServiceHelpers.SendRequest<EvaluateImageResult>(client, message);
             }
         }
 
@@ -142,8 +142,8 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/Evaluate?CacheID={1}", this.options.ImageServicePathV2, cacheId);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKey);
-                return await this.SendRequest<EvaluateImageResult>(client, message);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
+                return await ServiceHelpers.SendRequest<EvaluateImageResult>(client, message);
             }
         }        
 
@@ -163,7 +163,7 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/Match", this.options.ImageServicePath);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
 
                 MatchImageRequest request = new MatchImageRequest(imageContent);
                 if (imageContent.BinaryContent == null)
@@ -179,7 +179,7 @@ namespace ContentModeratorSDK.Service
                     message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
                 }
 
-                return await this.SendRequest<MatchImageResult>(client, message);
+                return await ServiceHelpers.SendRequest<MatchImageResult>(client, message);
             }
         }
 
@@ -202,7 +202,7 @@ namespace ContentModeratorSDK.Service
                     cacheContent ? "?cacheImage=true" : string.Empty);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
                 MatchImageRequest request = new MatchImageRequest(imageContent);
                 if (imageContent.BinaryContent == null)
                 {
@@ -217,7 +217,7 @@ namespace ContentModeratorSDK.Service
                     message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
                 }
 
-                return await this.SendRequest<MatchImageResult>(client, message);
+                return await ServiceHelpers.SendRequest<MatchImageResult>(client, message);
             }
         }
 
@@ -235,19 +235,19 @@ namespace ContentModeratorSDK.Service
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
-                //string urlPath = $"{this.options.TextServicePath}{$"/Text/Screen?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
+                
                 string urlPath = string.Format("{0}/Text/Screen?language={1}&subscription-key={2}",
-                    this.options.TextServicePath, language, this.options.TextServiceCustomListKey);
+                    this.options.TextServicePath, language, this.options.TextServiceKey);
             HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                // this.Addkey(message, this.options.TextServiceKey);
+                ServiceHelpers.Addkey(message, this.options.TextServiceKey);
                 message.Headers.Add("x-contentsources", this.options.TextContentSourceId);
                 ScreenTextRequest request = new ScreenTextRequest(textContent);
                 message.Content = new StringContent(
                     JsonConvert.SerializeObject(request),
                     Encoding.UTF8,
                     "application/json");
-                return await this.SendRequest<ScreenTextResult>(client, message);
+                return await ServiceHelpers.SendRequest<ScreenTextResult>(client, message);
             }
         }
 
@@ -269,7 +269,7 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/Screen?language={1}", this.options.TextServicePathV2, language);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.TextServiceKey);
+                ServiceHelpers.Addkey(message, this.options.TextServiceKey);
 
                 message.Headers.Add("x-contentsources", this.options.TextContentSourceId);
 
@@ -280,7 +280,7 @@ namespace ContentModeratorSDK.Service
                 message.Content.Headers.ContentType.MediaType = "text/plain";
                 message.Content.Headers.ContentType.CharSet = null;
 
-                return await this.SendRequest<ScreenTextResult>(client, message);
+                return await ServiceHelpers.SendRequest<ScreenTextResult>(client, message);
             }
         }
 
@@ -291,17 +291,17 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 //string urlPath = $"{this.options.TextServicePath}{$"/Text/IdentifyLanguage?subscription-key={this.options.TextServiceCustomListKey}"}";
-            string urlPath = string.Format("{0}/Text/IdentifyLanguage?subscription-key={1}",this.options.TextServicePath,this.options.TextServiceCustomListKey);
+            string urlPath = string.Format("{0}/Language/Identify?subscription-key={1}", this.options.TextServicePath,this.options.TextServiceCustomListKey);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-              //  this.Addkey(message, this.options.TextServiceKey);
+              //  ServiceHelpers.Addkey(message, this.options.TextServiceKey);
                 message.Headers.Add("x-contentsources", this.options.TextContentSourceId);
                 IdentifyLanguageRequest request = new IdentifyLanguageRequest(textContent);
                 message.Content = new StringContent(
                     JsonConvert.SerializeObject(request),
                     Encoding.UTF8,
                     "application/json");
-                return await this.SendRequest<IdentifyLanguageResult>(client, message);
+                return await ServiceHelpers.SendRequest<IdentifyLanguageResult>(client, message);
             }
         }
 
@@ -321,7 +321,7 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/Image/Add", this.options.ImageServiceCustomListPath);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceCustomListKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceCustomListKey);
 
                 ImageAddRequest request = new ImageAddRequest(imageContent);
                 if (imageContent.BinaryContent == null)
@@ -337,7 +337,7 @@ namespace ContentModeratorSDK.Service
                     message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
                 }
 
-                return await this.SendRequest<ImageAddResult>(client, message);
+                return await ServiceHelpers.SendRequest<ImageAddResult>(client, message);
             }
         }
 
@@ -365,7 +365,7 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/Image/Add{1}",this.options.ImageServiceCustomListPathV2, string.IsNullOrWhiteSpace(queryParam) ? string.Empty : queryParam);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceCustomListKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceCustomListKey);
 
                 ImageAddRequest request = new ImageAddRequest(imageContent);
                 if (imageContent.BinaryContent == null)
@@ -381,7 +381,7 @@ namespace ContentModeratorSDK.Service
                     message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
                 }
 
-                return await this.SendRequest<ImageAddResult>(client, message);
+                return await ServiceHelpers.SendRequest<ImageAddResult>(client, message);
             }
         }
 
@@ -399,8 +399,8 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/HashIndex/Refresh",this.options.ImageServiceCustomListPath);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceCustomListKey);
-                return await this.SendRequest<ImageRefreshIndexResult>(client, message);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceCustomListKey);
+                return await ServiceHelpers.SendRequest<ImageRefreshIndexResult>(client, message);
             }
         }
 
@@ -418,8 +418,8 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/HashIndex/Refresh",this.options.ImageServiceCustomListPathV2);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceCustomListKey);
-                return await this.SendRequest<ImageRefreshIndexResult>(client, message);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceCustomListKey);
+                return await ServiceHelpers.SendRequest<ImageRefreshIndexResult>(client, message);
             }
         }
 
@@ -433,14 +433,11 @@ namespace ContentModeratorSDK.Service
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(this.options.HostUrl);
-
-                //string urlPath = $"{this.options.ImageServicePath}{"/Image/ExtractText"}{"?language="}{language}";
-                //string urlPath = $"{this.options.ImageServicePath}{"/OCR"}{"?language="}{language}";
-                string urlPath = string.Format("{0}/OCR?language={1}", this.options.ImageServicePath, language);
+                client.BaseAddress = new Uri(this.options.HostUrl);            
+                string urlPath = string.Format("{0}/ExtractText?language={1}", this.options.ImageServicePath, language);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
 
                 ExtractTextRequest request = new ExtractTextRequest(imageContent);
 
@@ -457,7 +454,7 @@ namespace ContentModeratorSDK.Service
                     message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
                 }
 
-                return await this.SendRequest<ExtractTextResult>(client, message);
+                return await ServiceHelpers.SendRequest<ExtractTextResult>(client, message);
             }
         }
 
@@ -478,7 +475,7 @@ namespace ContentModeratorSDK.Service
                     cacheContent ? "&cacheImage=true" : string.Empty);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
                 message.Headers.Add("language", "eng");
                 //message.Headers.Add("x-contentsources", "3061");
                 ExtractTextRequest request = new ExtractTextRequest(imageContent);
@@ -496,7 +493,7 @@ namespace ContentModeratorSDK.Service
                     message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
                 }
 
-                return await this.SendRequest<ExtractTextResult>(client, message);
+                return await ServiceHelpers.SendRequest<ExtractTextResult>(client, message);
             }
         }
 
@@ -510,8 +507,8 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/OCR?CacheID={1}", this.options.ImageServicePathV2, cacheId);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKey);
-                return await this.SendRequest<ExtractTextResult>(client, message);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
+                return await ServiceHelpers.SendRequest<ExtractTextResult>(client, message);
             }
         }
 
@@ -531,7 +528,7 @@ namespace ContentModeratorSDK.Service
                     cacheContent ? "?cacheImage=true" : string.Empty);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
                 DetectFaceRequest request = new DetectFaceRequest(imageContent);
 
                 if (imageContent.BinaryContent == null)
@@ -547,7 +544,7 @@ namespace ContentModeratorSDK.Service
                     message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
                 }
 
-                return await this.SendRequest<DetectFaceResult>(client, message);
+                return await ServiceHelpers.SendRequest<DetectFaceResult>(client, message);
             }
         }
 
@@ -560,8 +557,8 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/Faces?CacheID={1}", this.options.ImageServicePathV2, cacheId);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
 
-                this.Addkey(message, this.options.ImageServiceKey);
-                return await this.SendRequest<DetectFaceResult>(client, message);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
+                return await ServiceHelpers.SendRequest<DetectFaceResult>(client, message);
             }
         }
 
@@ -574,7 +571,7 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}/",this.options.ImageCachingPath);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.ImageCachingKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
                 
                 BaseImageRequest request = new BaseImageRequest(imageContent);
 
@@ -591,7 +588,7 @@ namespace ContentModeratorSDK.Service
                     message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
                 }
 
-                return await this.SendRequest<BaseModeratorResult>(client, message);
+                return await ServiceHelpers.SendRequest<BaseModeratorResult>(client, message);
             }
         }
 
@@ -605,9 +602,9 @@ namespace ContentModeratorSDK.Service
                 string urlPath = string.Format("{0}?CacheID={1}", this.options.ImageCachingPath, cacheId);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Delete, urlPath);
 
-                this.Addkey(message, this.options.ImageCachingKey);
+                ServiceHelpers.Addkey(message, this.options.ImageServiceKey);
 
-                return await this.SendRequest<BaseModeratorResult>(client, message);
+                return await ServiceHelpers.SendRequest<BaseModeratorResult>(client, message);
             }
         }
 
@@ -625,16 +622,16 @@ namespace ContentModeratorSDK.Service
 
                 //string urlPath =
                     //$"{this.options.TextServiceCustomListPath}{$"/Text/Add/{textContent.ContentAsString}?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
-                string urlPath = string.Format("{0}/Text/Add/{1}?language={2}&subscription-key={3}",
+                string urlPath = string.Format("{0}/{1}?language={2}&subscription-key={3}",
                     this.options.TextServiceCustomListPath, textContent.ContentAsString, language,
                     this.options.TextServiceCustomListKey);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                //this.Addkey(message, this.options.TextServiceCustomListKey);
+                //ServiceHelpers.Addkey(message, this.options.TextServiceCustomListKey);
 
-                this.AddTextContentSourceKey(message, this.options.TextContentSourceId);
+                ServiceHelpers.AddTextContentSourceKey(message, this.options.TextContentSourceId);
 
-                HttpResponseMessage response = await this.SendRequest(client, message);
+                HttpResponseMessage response = await ServiceHelpers.SendRequest(client, message);
 
                 return response;
 
@@ -651,16 +648,14 @@ namespace ContentModeratorSDK.Service
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(this.options.HostUrl);
-
-                //string urlPath =
-                //    $"{this.options.TextServiceCustomListPath}{$"/Text/Refreshindex?language={language}"}";
-                string urlPath = string.Format("{0}/Text/Refreshindex?language={1}",
+                
+                string urlPath = string.Format("{0}/Refreshindex?language={1}",
                     this.options.TextServiceCustomListPath, language);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                this.Addkey(message, this.options.TextServiceCustomListKey);
+                ServiceHelpers.Addkey(message, this.options.TextServiceCustomListKey);
 
-                return await this.SendRequest<TextRefreshIndexResult>(client, message);
+                return await ServiceHelpers.SendRequest<TextRefreshIndexResult>(client, message);
             }
         }
 
@@ -678,15 +673,15 @@ namespace ContentModeratorSDK.Service
 
                 //string urlPath =
                 //    $"{this.options.TextServiceCustomListPath}{$"/Text/{textContent.ContentAsString}?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
-                string urlPath = string.Format("{0}/Text/{1}?language={2}&subscription-key={3}",
+                string urlPath = string.Format("{0}/{1}?language={2}&subscription-key={3}",
                     this.options.TextServiceCustomListPath, textContent.ContentAsString, language,
                     this.options.TextServiceCustomListKey);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Delete, urlPath);
 
-                // this.Addkey(message, this.options.TextServiceCustomListKey);
-                this.AddTextContentSourceKey(message, this.options.TextContentSourceId);
+                // ServiceHelpers.Addkey(message, this.options.TextServiceCustomListKey);
+                ServiceHelpers.AddTextContentSourceKey(message, this.options.TextContentSourceId);
 
-                return await this.SendRequest(client, message);
+                return await ServiceHelpers.SendRequest(client, message);
             }
         }
 
@@ -702,136 +697,22 @@ namespace ContentModeratorSDK.Service
                 client.BaseAddress = new Uri(this.options.HostUrl);
 
                 //string urlPath = $"{this.options.TextServiceCustomListPath}{$"/Text/Import?language={language}&subscription-key={this.options.TextServiceCustomListKey}"}";
-                string urlPath = string.Format("{0}/Text/Import?language={1}&subscription-key={2}",
+                string urlPath = string.Format("{0}/Import?language={1}&subscription-key={2}",
                     this.options.TextServiceCustomListPath, language, this.options.TextServiceCustomListKey);
                 HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
 
-                //this.Addkey(message, this.options.TextServiceCustomListKey);
-                this.AddTextContentSourceKey(message, this.options.TextContentSourceId);
+                //ServiceHelpers.Addkey(message, this.options.TextServiceCustomListKey);
+                ServiceHelpers.AddTextContentSourceKey(message, this.options.TextContentSourceId);
 
 
-                return await SendRequest<ImportTermListResult>(client, message);
+                return await ServiceHelpers.SendRequest<ImportTermListResult>(client, message);
             }
         }
 
         #endregion
 
-        #region Support Methods
+       
 
-        /// <summary>
-        /// Send a request to the Moderator service
-        /// </summary>
-        /// <typeparam name="T">Response type</typeparam>
-        /// <param name="client">Client</param>
-        /// <param name="message">Message</param>
-        /// <returns>Response task</returns>
-        private async Task<T> SendRequest<T>(HttpClient client, HttpRequestMessage message)
-        {
-            T result = default(T);
-
-            var sendTask = await client.SendAsync(message).ContinueWith(
-                async task =>
-                {
-                    HttpResponseMessage messageResponse = task.Result;
-                    messageResponse.EnsureSuccessStatusCode();
-
-                    await messageResponse.Content.ReadAsStringAsync().ContinueWith
-                        (readAsyncTask => { result = this.GetResultObject<T>(readAsyncTask.Result); });
-                });
-
-            sendTask.Wait();
-
-            return result;
-        }
-
-        private async Task<HttpResponseMessage> SendRequest(HttpClient client, HttpRequestMessage message)
-        {
-            HttpResponseMessage response = await client.SendAsync(message);
-            response.EnsureSuccessStatusCode();
-            return response;
-        }
-
-        /// <summary>
-        /// Convert a response string to an object
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="responseString"></param>
-        /// <returns></returns>
-        private T GetResultObject<T>(string responseString)
-        {
-            T result = JsonConvert.DeserializeObject<T>(responseString);
-            return result;
-        }
-
-        /// <summary>
-        /// Add the subscription key
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="key"></param>
-        private void Addkey(HttpRequestMessage message, string key)
-        {
-            message.Headers.Add("Ocp-Apim-Subscription-Key", key);
-        }
-
-        private void AddTextContentSourceKey(HttpRequestMessage message, string key)
-        {
-            message.Headers.Add("cs-id", key);
-        }
-
-        #endregion
-
-        #region PDNA Apis
-        /// <summary>
-        /// Validate an image against the images in the PDNA DB
-        /// </summary>
-        /// <param name="imageContent">Image to match</param>
-        /// <param name="cacheContent">Cache Image content</param>
-        /// <returns>Match response</returns>
-        public async Task<MatchImageResult> ValidateImageAsync(ImageModeratableContent imageContent, bool cacheContent = false)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(this.options.HostUrl);
-
-                //string urlPath = $"{this.options.ImageServicePathV2}{"/Image/Match"}";
-                //string urlPath = $"{this.options.ImageServicePathV2}{string.Format("/Image/Match{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
-                //string urlPath = $"{this.options.PDNAImageServicePath}{string.Format("/Validate{0}", cacheContent ? "?cacheImage=true" : string.Empty)}";
-                string urlPath = string.Format("{0}/Validate{1}", this.options.PDNAImageServicePath,
-                    cacheContent ? "?cacheImage=true" : string.Empty);
-                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, urlPath);
-
-                this.Addkey(message, this.options.PDNAImageServiceKey);
-                MatchImageRequest request = new MatchImageRequest(imageContent);
-                if (imageContent.BinaryContent == null)
-                {
-                    message.Content = new StringContent(
-                        JsonConvert.SerializeObject(request),
-                        Encoding.UTF8,
-                        "application/json");
-                }
-                else
-                {
-                    message.Content = new StreamContent(imageContent.BinaryContent.Stream);
-                    message.Content.Headers.ContentType = MediaTypeHeaderValue.Parse(imageContent.BinaryContent.ContentType);
-                }
-
-                return await this.SendRequest<MatchImageResult>(client, message);
-            }
-        }
-
-        public async Task<MatchImageResult> ValidateImageInCache(string cacheId)
-        {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(this.options.HostUrl);
-                //string urlPath = $"{this.options.PDNAImageServicePath}{string.Format("/Validate?CacheID={0}", cacheId)}";
-                string urlPath = string.Format("{0}/Validate?CacheID={1}", this.options.PDNAImageServicePath, cacheId);
-                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
-
-                this.Addkey(message, this.options.PDNAImageServiceKey);
-                return await this.SendRequest<MatchImageResult>(client, message);
-            }
-        }
-        #endregion
+      
     }
 }

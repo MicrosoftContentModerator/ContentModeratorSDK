@@ -15,7 +15,7 @@ namespace ContentModeratorSDK.Tests
     using ContentModeratorSDK.Text;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Configuration;
-
+    using System.Threading;
     /// <summary>
     /// End to end tests for the Content Moderator service
     /// </summary>
@@ -249,9 +249,7 @@ namespace ContentModeratorSDK.Tests
                 Assert.IsTrue(addResult != null, "Expected valid result");
                 Assert.IsTrue(string.IsNullOrWhiteSpace(addResult.ImageId) 
                     || string.Compare(addResult.Status.Description, "Error occurred while processing request :: Failure Adding a valid image  :: Image already exists") == 0,
-                    "Image Id can be null only if the Image already exists");
-
-                
+                    "Image Id can be null only if the Image already exists");                
 
                 // Refresh index
                 var refreshResponse = moderatorService.RefreshImageIndexAsync();
@@ -290,7 +288,10 @@ namespace ContentModeratorSDK.Tests
                 var addResponse = moderatorService.ImageAddAsyncV2(imageContent, TestTags, TestLabel);
                 var addResult = addResponse.Result;
                 Assert.IsTrue(addResult != null, "Expected valid result");
-                Assert.IsTrue(!string.IsNullOrWhiteSpace(addResult.ImageId), "Image ID came back as NULL after adding");
+                Assert.IsTrue(string.IsNullOrWhiteSpace(addResult.ImageId)
+                    || string.Compare(addResult.Status.Description, "Error occurred while processing request :: Failure Adding a valid image  :: Image already exists") == 0,
+                    "Image Id can be null only if the Image already exists");
+
 
 
                 // Refresh index
@@ -298,6 +299,20 @@ namespace ContentModeratorSDK.Tests
                 var refreshResult = refreshResponse.Result;
                 Assert.IsTrue(refreshResult.IsUpdateSuccess, "Expected update Success on refresh");
             }
+
+            //Wait for Index to be Ready
+            while (true)
+            {
+                var res = moderatorService.CheckImageIndexStatusAsync();
+                var response = res.Result;
+                if (response.IsSuccessStatusCode && response.ReasonPhrase == "The index is ready for matching.")
+                {
+                    break;
+
+                }
+                else { Thread.Sleep(5000); }
+            }
+
 
             using (Stream stream = new FileStream(TestImageContent, FileMode.Open, FileAccess.Read))
             {
@@ -348,13 +363,12 @@ namespace ContentModeratorSDK.Tests
         public void CheckHashIndexStatus()
         {
             IModeratorService moderatorService = new ModeratorService(this.serviceOptions);
-            var actualResult = DetectFaceContent(moderatorService, true);
-
-            var moderateResult = moderatorService.DetectFaceInCache(actualResult.CacheID);
-            actualResult = moderateResult.Result;
-            Assert.IsTrue(actualResult != null, "Expected valid result");
-            Assert.IsTrue(actualResult.Result, "Expected valid result");
-            Assert.IsNotNull(actualResult.Faces, "Expected valid result");
+            var actualResult = moderatorService.CheckImageIndexStatusAsync();
+            var res = actualResult.Result;
+                        
+            Assert.IsTrue(res != null, "Expected valid result");
+            Assert.IsTrue(res.StatusCode == System.Net.HttpStatusCode.OK, "Invalid Http Status Code");
+            Assert.AreEqual("The index is ready for matching.", res.ReasonPhrase);
         }
 
         private static Service.Results.DetectFaceResult DetectFaceContent(IModeratorService moderatorService, bool cacheImage = false)

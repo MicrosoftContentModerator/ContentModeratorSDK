@@ -424,6 +424,23 @@ namespace ContentModeratorSDK.Service
         }
 
         /// <summary>
+        /// Check Index Status
+        /// </summary>
+        /// <returns>Add Image response</returns>
+        public async Task<HttpResponseMessage> CheckImageIndexStatusAsync()
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.options.HostUrl);                
+                string urlPath = string.Format("{0}/HashIndex/CheckIndex", this.options.ImageServiceCustomListPathV2);
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, urlPath);
+
+                ServiceHelpers.Addkey(message, this.options.ImageServiceCustomListKey);
+                return await ServiceHelpers.SendRequest(client, message);
+            }
+        }
+
+        /// <summary>
         /// Call ExtractText method to extract the text in an image through the use of OCR
         /// </summary>
         /// <param name="imageContent">Image to run Extraction on</param>

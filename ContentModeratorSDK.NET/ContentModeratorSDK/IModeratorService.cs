@@ -99,6 +99,12 @@ namespace ContentModeratorSDK
         Task<ImageRefreshIndexResult> RefreshImageIndexAsync();
 
         /// <summary>
+        /// Get the status of the Image List index
+        /// </summary>
+        /// <returns>http 200 if the Index is ready to be searched</returns>
+        Task<HttpResponseMessage> CheckImageIndexStatusAsync();
+
+        /// <summary>
         /// Refresh the image Index. This api needs to be called after adding an image into the image list.
         /// </summary>
         /// <returns>Add Image response</returns>

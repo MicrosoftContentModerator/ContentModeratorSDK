@@ -66,6 +66,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
@@ -86,10 +90,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Helpers\Comparers.cs" />
+    <Compile Include="ModeratorImageV2Tests.cs" />
     <Compile Include="ModeratorImageTests.cs" />
+    <Compile Include="ModeratorTextV2Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PDNAServiceTests.cs" />
     <Compile Include="ModeratorTextTests.cs" />
+    <Compile Include="ResultJsonForComparison.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResultJsonForComparison.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ContentModeratorSDK\ContentModeratorSDK.csproj">
@@ -99,12 +111,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\sample.jpg" />
     <Content Include="Content\test.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ResultJsonForComparison.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResultJsonForComparison.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

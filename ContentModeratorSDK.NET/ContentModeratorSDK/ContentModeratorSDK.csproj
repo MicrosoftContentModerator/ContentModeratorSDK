@@ -77,9 +77,13 @@
   <ItemGroup>
     <Compile Include="DataRepresentation.cs" />
     <Compile Include="IContentModerator.cs" />
+    <Compile Include="Service\Results\ImageRemoveResult.cs" />
+    <Compile Include="Service\Results\ImageResetResult.cs" />
     <Compile Include="Image\ImageContentModerator.cs" />
     <Compile Include="Image\ImageModeratableContent.cs" />
+    <Compile Include="IModeratorServiceV2.cs" />
     <Compile Include="IPDNAService.cs" />
+    <Compile Include="Service\ModeratorServiceV2.cs" />
     <Compile Include="Service\PDNAService.cs" />
     <Compile Include="Service\PDNAServiceOptions.cs" />
     <Compile Include="Service\Requests\DetectFaceRequest.cs" />
@@ -88,8 +92,10 @@
     <Compile Include="Service\Results\DetectFaceResult.cs" />
     <Compile Include="Service\Results\ExtractTextResult.cs" />
     <Compile Include="Service\Results\IdentifyLanguageResult.cs" />
+    <Compile Include="Service\Results\ImageListResult.cs" />
     <Compile Include="Service\Results\ImportTermListResult.cs" />
     <Compile Include="Service\Results\RemoveTermResult.cs" />
+    <Compile Include="Service\Results\TermListResult.cs" />
     <Compile Include="Service\Results\TextRefreshIndexResult.cs" />
     <Compile Include="Service\Results\AddTermResult.cs" />
     <Compile Include="IModeratableContent.cs" />

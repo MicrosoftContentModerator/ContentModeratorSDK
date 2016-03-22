@@ -58,7 +58,7 @@ namespace ContentModeratorSDK.Tests
         /// </summary>
         [TestMethod]
         [TestCategory("Image.Evaluate")]
-        public void EvaluateImageUrlTest()
+        public void V2EvaluateImageUrlTest()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
 
@@ -78,7 +78,7 @@ namespace ContentModeratorSDK.Tests
         /// </summary>
         [TestMethod]
         [TestCategory("Image.Evaluate")]
-        public void EvaluateImageContentTest()
+        public void V2EvaluateImageContentTest()
         {
             using (Stream stream = new FileStream(TestImageContent, FileMode.Open, FileAccess.Read))
             {
@@ -104,7 +104,7 @@ namespace ContentModeratorSDK.Tests
         /// </summary>
         [TestMethod]
         [TestCategory("Image.Evaluate")]
-        public void EvaluateImageUrlV2Test()
+        public void V2EvaluateImageUrlV2Test()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
 
@@ -128,7 +128,7 @@ namespace ContentModeratorSDK.Tests
         [TestMethod]
         [TestCategory("Image.Evaluate")]
         [TestCategory("Image.V2")]
-        public void EvaluateImageContentV2Test()
+        public void V2EvaluateImageContentV2Test()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             Service.Results.EvaluateImageResult actualResult = EvaluateImageContent(moderatorService);
@@ -161,7 +161,7 @@ namespace ContentModeratorSDK.Tests
         [TestCategory("Image.Evaluate")]
         [TestCategory("Image.Cache")]
         [TestCategory("Image.V2")]
-        public void EvaluateImageContentV2AndCacheTest()
+        public void V2EvaluateImageContentV2AndCacheTest()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             Service.Results.EvaluateImageResult actualResult = EvaluateImageContent(moderatorService, true);
@@ -175,7 +175,7 @@ namespace ContentModeratorSDK.Tests
         [TestMethod]
         [TestCategory("Image.Evaluate")]
         [TestCategory("Image.Cache")]
-        public void EvaluateImageInCache()
+        public void V2EvaluateImageInCache()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             var actualResult = EvaluateImageContent(moderatorService, true);
@@ -190,7 +190,7 @@ namespace ContentModeratorSDK.Tests
 
         [TestMethod]
         [TestCategory("Image.Cache")]
-        public void CacheImage()
+        public void V2CacheImage()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             var actualResult = CacheImageContent(moderatorService);
@@ -200,7 +200,7 @@ namespace ContentModeratorSDK.Tests
 
         [TestMethod]
         [TestCategory("Image.Cache")]
-        public void UnCacheImage()
+        public void V2UnCacheImage()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             var actualResult = CacheImageContent(moderatorService);
@@ -231,7 +231,7 @@ namespace ContentModeratorSDK.Tests
         [TestMethod]
         [TestCategory("Image.CustomList")]
         [TestCategory("Image.V2")]
-        public void AddImageV2Test()
+        public void V2AddImageV2Test()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
 
@@ -290,7 +290,7 @@ namespace ContentModeratorSDK.Tests
         [TestMethod]
         [TestCategory("Image.Face")]
         [TestCategory("Image.V2")]
-        public void DetectFaceV2AndCacheTest()
+        public void V2DetectFaceV2AndCacheTest()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             Service.Results.DetectFaceResult extractResult = DetectFaceContent(moderatorService, true);
@@ -302,7 +302,7 @@ namespace ContentModeratorSDK.Tests
 
         [TestMethod]
         [TestCategory("Image.Face")]
-        public void DetectFaceInCache()
+        public void V2DetectFaceInCache()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             var actualResult = DetectFaceContent(moderatorService, true);
@@ -316,7 +316,7 @@ namespace ContentModeratorSDK.Tests
 
         [TestMethod]
         [TestCategory("Image.HashIndex")]
-        public void CheckHashIndexStatus()
+        public void V2CheckHashIndexStatus()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             var actualResult = moderatorService.CheckImageIndexStatusAsync();
@@ -345,7 +345,7 @@ namespace ContentModeratorSDK.Tests
         /// </summary>
         [TestMethod]
         [TestCategory("Image.OCR")]
-        public void ExtractTextTest()
+        public void V2ExtractTextTest()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
 
@@ -371,7 +371,7 @@ namespace ContentModeratorSDK.Tests
         [TestMethod]
         [TestCategory("Image.OCR")]
         [TestCategory("Image.V2")]
-        public void ExtractTextV2AndCacheTest()
+        public void V2ExtractTextV2AndCacheTest()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             Service.Results.ExtractTextResult extractResult = ExtractTextContent(moderatorService, true);
@@ -385,7 +385,7 @@ namespace ContentModeratorSDK.Tests
 
         [TestMethod]
         [TestCategory("Image.OCR")]
-        public void ExtractTextInCache()
+        public void V2ExtractTextInCache()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             var actualResult = ExtractTextContent(moderatorService, true);

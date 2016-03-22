@@ -55,7 +55,7 @@ namespace ContentModeratorSDK.Tests
         /// </summary>
         [TestMethod]
         [TestCategory("Text.Screen")]
-        public void ScreenTextTest()
+        public void V2ScreenTextTest()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
 
@@ -86,7 +86,7 @@ namespace ContentModeratorSDK.Tests
         /// </summary>
         [TestMethod]
         [TestCategory("Text.CustomList")]
-        public void AddTermTest()
+        public void V2AddTermTest()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
 
@@ -115,7 +115,7 @@ namespace ContentModeratorSDK.Tests
         /// </summary>
         [TestMethod]
         [TestCategory("Text.CustomList")]
-        public void RemoveAllTermsInALanguageTest()
+        public void V2RemoveAllTermsInALanguageTest()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
             var deleteTask = moderatorService.RemoveAllTermsAsync("eng");
@@ -125,9 +125,14 @@ namespace ContentModeratorSDK.Tests
 
         [TestMethod]
         [TestCategory("Text.CustomList")]
-        public void GetTermListTest()
+        public void V2GetTermListTest()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
+
+            // Import the term list. This needs to only be done once before screen
+            moderatorService.ImportTermListAsync("eng").Wait();
+            moderatorService.RefreshTextIndexAsync("eng").Wait();
+
             var taskResult = moderatorService.ListTermsAsync("eng");
             var actualResult = taskResult.Result;
             
@@ -139,7 +144,7 @@ namespace ContentModeratorSDK.Tests
         /// </summary>
         [TestMethod]        
         [TestCategory("Text.DetectLanguage")]
-        public void IdentifyLanguageTest()
+        public void V2IdentifyLanguageTest()
         {
             IModeratorServiceV2 moderatorService = new ModeratorServiceV2(this.serviceOptions);
 

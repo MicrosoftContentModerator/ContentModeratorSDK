@@ -114,6 +114,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\pdnaSample.jpg" />
     <Content Include="Content\sample.jpg" />
     <Content Include="Content\test.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

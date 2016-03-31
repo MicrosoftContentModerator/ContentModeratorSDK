@@ -15,7 +15,7 @@ namespace ContentModeratorSDK.Tests
     {
         private const string TestImageUrl = "https://cdn.schedulicity.com/usercontent/b9de6e06-e954-4169-ac44-57fa1c3b4245.jpg";
         public const string noMatchImageContent = @"Content\sample.jpg";
-        public const string matchImageContent = @"C:\Users\suraks\Downloads\SampleImages224\SampleImages224\img_130.jpg";//Content\pdnasample.jpg";
+        public const string matchImageContent = @"Content\pdnasample.jpg";
 
         public const string TestTags = "101,102";
         public const string TestLabel = "TestImage";

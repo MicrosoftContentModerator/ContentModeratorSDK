@@ -41,7 +41,7 @@ Function Get-FilePhotoDNA
          The region based uri from https://myphotodna.microsoftmoderator.com
 
         .EXAMPLE
-         Get-FilePhotoDNA -APIKey key -TargetFile image
+         Get-FilePhotoDNA -APIKey key -TargetFile image -Uri uri
          This command returns the service JSON response as an object.
     #>
 
@@ -69,7 +69,7 @@ Function Get-FilePhotoDNA
     }
 
     if((Get-Item $TargetFile).length -eq 0){
-       Write-Warning "Submitted Target file is empty"
+       Write-Warning "Submitted target file is empty"
     }
     else{
        return (Invoke-RestMethod -Uri $Uri -ContentType $ContentType -Headers @{"Ocp-Apim-Subscription-Key" = $APIKey} -Method POST -InFile $Subject.FullName)

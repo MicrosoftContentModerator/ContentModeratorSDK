@@ -32,7 +32,7 @@ Function Get-FilePhotoDNA
          Get-DirectoryPhotoDNA
 
         .PARAMETER APIKey
-         The subscription key from https://myphotodna.microsoftmoderator.com; may require logging in through Azure portal to access.
+         The subscription key from https://myphotodna.microsoftmoderator.com
 
         .PARAMETER TargetFile
          A file of a supported image type, currently BMP, JPEG, GIF, PNG, & TIFF
@@ -41,7 +41,7 @@ Function Get-FilePhotoDNA
          The region based uri from https://myphotodna.microsoftmoderator.com
 
         .EXAMPLE
-         Get-FilePhotoDNA -APIKey key -TargetFile image -Uri uri
+         Get-FilePhotoDNA -APIKey <Your PhotoDNA Subscription key> -TargetFile <Absolute Path to the Image File> -Uri <PhotoDNA Match endpoint> 
          This command returns the service JSON response as an object.
     #>
 
@@ -58,21 +58,30 @@ Function Get-FilePhotoDNA
         [string]$Uri
     )
 
-    $Subject = (Get-Item $TargetFile -EA Stop)
+    Try{
+        $Subject = (Get-Item $TargetFile -EA Stop)
+        
+        switch($Subject.Extension) {
+            {@('.jpeg', '.jpg') -contains $_} {$ContentType = "image/jpeg"}
+            {@('.gif') -contains $_} {$ContentType = "image/gif"}
+            {@('.png') -contains $_} {$ContentType = "image/png"}
+            {@('.bmp') -contains $_} {$ContentType = "image/bmp"}
+            {@('.tiff', '.tif') -contains $_} {$ContentType = "image/tiff"}
+        }
 
-    switch($Subject.Extension) {
-        {@('.jpeg', '.jpg') -contains $_} {$ContentType = "image/jpeg"}
-        {@('.gif') -contains $_} {$ContentType = "image/gif"}
-        {@('.png') -contains $_} {$ContentType = "image/png"}
-        {@('.bmp') -contains $_} {$ContentType = "image/bmp"}
-        {@('.tiff', '.tif') -contains $_} {$ContentType = "image/tiff"}
-    }
+        if((Get-Item $TargetFile).length -eq 0){
 
-    if((Get-Item $TargetFile).length -eq 0){
-       Write-Warning "Submitted target file is empty"
+           Write-Error "Submitted file is empty"
+       
+        }
+        else{
+           return (Invoke-RestMethod -Uri $Uri -ContentType $ContentType -Headers @{"Ocp-Apim-Subscription-Key" = $APIKey} -Method POST -InFile $Subject.FullName)
+        }
     }
-    else{
-       return (Invoke-RestMethod -Uri $Uri -ContentType $ContentType -Headers @{"Ocp-Apim-Subscription-Key" = $APIKey} -Method POST -InFile $Subject.FullName)
+    Catch{
+       $ErrorMessage = $_.Exception.Message
+
+       Write-Error "$ErrorMessage"
     }
 }
 

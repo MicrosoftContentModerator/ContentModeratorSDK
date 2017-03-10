@@ -32,13 +32,16 @@ Function Get-FilePhotoDNA
          Get-DirectoryPhotoDNA
 
         .PARAMETER APIKey
-         The subscription key from https://developer-westus.microsoftmoderator.com/developer; may require logging in through Azure portal to access.
+         The subscription key from https://myphotodna.microsoftmoderator.com
 
         .PARAMETER TargetFile
          A file of a supported image type, currently BMP, JPEG, GIF, PNG, & TIFF
 
+        .PARAMETER Uri
+         The region based uri from https://myphotodna.microsoftmoderator.com
+
         .EXAMPLE
-         Get-FilePhotoDNA -APIKey key -TargetFile image
+         Get-FilePhotoDNA -APIKey <Your PhotoDNA Subscription key> -TargetFile <Absolute Path to the Image File> -Uri <PhotoDNA Match endpoint> 
          This command returns the service JSON response as an object.
     #>
 
@@ -49,20 +52,37 @@ Function Get-FilePhotoDNA
         [string]$APIKey,
         
         [Parameter(Mandatory=$true)]
-        [string]$TargetFile
+        [string]$TargetFile,
+
+        [Parameter(Mandatory=$true)]
+        [string]$Uri
     )
 
-    $Subject = (Get-Item $TargetFile -EA Stop)
+    Try{
+        $Subject = (Get-Item $TargetFile -EA Stop)
+        
+        switch($Subject.Extension) {
+            {@('.jpeg', '.jpg') -contains $_} {$ContentType = "image/jpeg"}
+            {@('.gif') -contains $_} {$ContentType = "image/gif"}
+            {@('.png') -contains $_} {$ContentType = "image/png"}
+            {@('.bmp') -contains $_} {$ContentType = "image/bmp"}
+            {@('.tiff', '.tif') -contains $_} {$ContentType = "image/tiff"}
+        }
 
-    switch($Subject.Extension) {
-        {@('.jpeg', '.jpg') -contains $_} {$ContentType = "image/jpeg"}
-        {@('.gif') -contains $_} {$ContentType = "image/gif"}
-        {@('.png') -contains $_} {$ContentType = "image/png"}
-        {@('.bmp') -contains $_} {$ContentType = "image/bmp"}
-        {@('.tiff', '.tif') -contains $_} {$ContentType = "image/tiff"}
+        if((Get-Item $TargetFile).length -eq 0){
+
+           Write-Error "Submitted file is empty"
+       
+        }
+        else{
+           return (Invoke-RestMethod -Uri $Uri -ContentType $ContentType -Headers @{"Ocp-Apim-Subscription-Key" = $APIKey} -Method POST -InFile $Subject.FullName)
+        }
     }
+    Catch{
+       $ErrorMessage = $_.Exception.Message
 
-    return (Invoke-RestMethod -Uri https://api-westus.microsoftmoderator.com/v1/ScanImage/Validate -ContentType $ContentType -Headers @{"Ocp-Apim-Subscription-Key" = $APIKey} -Method POST -InFile $Subject.FullName)
+       Write-Error "$ErrorMessage"
+    }
 }
 
 Function Get-DirectoryPhotoDNA

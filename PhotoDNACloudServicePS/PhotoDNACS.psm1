@@ -71,6 +71,7 @@ Function Get-FilePhotoDNA
 
         if((Get-Item $TargetFile).length -eq 0){
 
+
            Write-Error "Submitted file is empty"
        
         }
@@ -160,4 +161,3 @@ Function Get-DirectoryPhotoDNA
         }
     }
 }
-

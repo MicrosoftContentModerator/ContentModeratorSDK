@@ -32,13 +32,16 @@ Function Get-FilePhotoDNA
          Get-DirectoryPhotoDNA
 
         .PARAMETER APIKey
-         The subscription key from https://developer-westus.microsoftmoderator.com/developer; may require logging in through Azure portal to access.
+         The subscription key from https://myphotodna.microsoftmoderator.com
 
         .PARAMETER TargetFile
          A file of a supported image type, currently BMP, JPEG, GIF, PNG, & TIFF
 
+        .PARAMETER Uri
+         The region based uri from https://myphotodna.microsoftmoderator.com
+
         .EXAMPLE
-         Get-FilePhotoDNA -APIKey key -TargetFile image
+         Get-FilePhotoDNA -APIKey <Your PhotoDNA Subscription key> -TargetFile <Absolute Path to the Image File> -Uri <PhotoDNA Match endpoint> 
          This command returns the service JSON response as an object.
     #>
 
@@ -49,20 +52,37 @@ Function Get-FilePhotoDNA
         [string]$APIKey,
         
         [Parameter(Mandatory=$true)]
-        [string]$TargetFile
+        [string]$TargetFile,
+
+        [Parameter(Mandatory=$true)]
+        [string]$Uri
     )
 
-    $Subject = (Get-Item $TargetFile -EA Stop)
+    Try{
+        $Subject = (Get-Item $TargetFile -EA Stop)
+        
+        switch($Subject.Extension) {
+            {@('.jpeg', '.jpg') -contains $_} {$ContentType = "image/jpeg"}
+            {@('.gif') -contains $_} {$ContentType = "image/gif"}
+            {@('.png') -contains $_} {$ContentType = "image/png"}
+            {@('.bmp') -contains $_} {$ContentType = "image/bmp"}
+            {@('.tiff', '.tif') -contains $_} {$ContentType = "image/tiff"}
+        }
 
-    switch($Subject.Extension) {
-        {@('.jpeg', '.jpg') -contains $_} {$ContentType = "image/jpeg"}
-        {@('.gif') -contains $_} {$ContentType = "image/gif"}
-        {@('.png') -contains $_} {$ContentType = "image/png"}
-        {@('.bmp') -contains $_} {$ContentType = "image/bmp"}
-        {@('.tiff', '.tif') -contains $_} {$ContentType = "image/tiff"}
+        if((Get-Item $TargetFile).length -eq 0){
+
+           Write-Error "Submitted file is empty"
+       
+        }
+        else{
+           return (Invoke-RestMethod -Uri $Uri -ContentType $ContentType -Headers @{"Ocp-Apim-Subscription-Key" = $APIKey} -Method POST -InFile $Subject.FullName)
+        }
     }
+    Catch{
+       $ErrorMessage = $_.Exception.Message
 
-    return (Invoke-RestMethod -Uri https://api-westus.microsoftmoderator.com/v1/ScanImage/Validate -ContentType $ContentType -Headers @{"Ocp-Apim-Subscription-Key" = $APIKey} -Method POST -InFile $Subject.FullName)
+       Write-Error "$ErrorMessage"
+    }
 }
 
 Function Get-DirectoryPhotoDNA
@@ -84,8 +104,11 @@ Function Get-DirectoryPhotoDNA
         .PARAMETER TargetDirectory
          Specify the root directory to screen for new images; defaults to current directory. Output file will be written to this directory as well
 
+        .PARAMETER Uri
+        The region based uri from https://myphotodna.microsoftmoderator.com
+
         .EXAMPLE
-         Get-DirectoryPhotoDNA -APIKey key -TargetDirectory directory
+         Get-DirectoryPhotoDNA -APIKey key -TargetDirectory directory -Uri <PhotoDNA Match endpoint> 
          This command writes (on first run) or updates (on subsequent runs) the output file in CSV format to the target directory for all successful requests to Microsoft PhotoDNA Cloud Service.
     #>
 
@@ -96,13 +119,15 @@ Function Get-DirectoryPhotoDNA
         [string]$APIKey,
         
         [Parameter(Mandatory=$false)]
-        [string]$TargetDirectory = '.'
+        [string]$TargetDirectory = '.',
+
+        [Parameter(Mandatory=$true)]
+        [string]$Uri
     )
 
     $SupportedExtensions = @('.jpeg', '.jpg', '.gif', '.png', '.bmp', '.tif', '.tiff')
-
-    $LogFile = Join-Path -Path $TargetDirectory -ChildPath 'PhotoDNA Results.csv'
-
+    $datestamp = (Get-Date).ToString("s").Replace(":","-") 
+    $LogFile = Join-Path -Path $TargetDirectory -ChildPath "PhotoDNA Results$datestamp.csv"
     $ThisCheck = (Get-Date).ToUniversalTime()
 
     $LastCheck = '1900-01-01 00:00:00'
@@ -127,7 +152,7 @@ Function Get-DirectoryPhotoDNA
     Get-ChildItem -Recurse $TargetDirectory |
     ForEach-Object {
         if ($SupportedExtensions -contains $_.Extension -and ($_.LastWriteTimeUtc -ge $Then -or $PreviouslyChecked -notcontains $_.FullName)) {
-            $response = (Get-FilePhotoDNA -APIKey $APIKey -TargetFile $_.FullName)
+            $response = (Get-FilePhotoDNA -APIKey $APIKey -TargetFile $_.FullName -Uri $Uri )
             Add-Content -Path $LogFile -Value "$($ThisCheck),$($_.FullName),$($response.TrackingId),$($response.Status.Code),$($response.Status.Description),$($response.IsMatch),$($response.MatchDetails.MatchFlags.AdvancedInfo.Value),$($response.MatchDetails.MatchFlags.Source),$($response.MatchDetails.MatchFlags.Violations)";
             if($response.Status.Code -ne 3000) {
                 Write-Warning "Did not process $($_.FullName)"
@@ -135,3 +160,4 @@ Function Get-DirectoryPhotoDNA
         }
     }
 }
+

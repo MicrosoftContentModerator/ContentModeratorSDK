@@ -71,6 +71,7 @@ Function Get-FilePhotoDNA
 
         if((Get-Item $TargetFile).length -eq 0){
 
+
            Write-Error "Submitted file is empty"
        
         }
@@ -104,8 +105,11 @@ Function Get-DirectoryPhotoDNA
         .PARAMETER TargetDirectory
          Specify the root directory to screen for new images; defaults to current directory. Output file will be written to this directory as well
 
+        .PARAMETER Uri
+        The region based uri from https://myphotodna.microsoftmoderator.com
+
         .EXAMPLE
-         Get-DirectoryPhotoDNA -APIKey key -TargetDirectory directory
+         Get-DirectoryPhotoDNA -APIKey key -TargetDirectory directory -Uri <PhotoDNA Match endpoint> 
          This command writes (on first run) or updates (on subsequent runs) the output file in CSV format to the target directory for all successful requests to Microsoft PhotoDNA Cloud Service.
     #>
 
@@ -116,13 +120,15 @@ Function Get-DirectoryPhotoDNA
         [string]$APIKey,
         
         [Parameter(Mandatory=$false)]
-        [string]$TargetDirectory = '.'
+        [string]$TargetDirectory = '.',
+
+        [Parameter(Mandatory=$true)]
+        [string]$Uri
     )
 
     $SupportedExtensions = @('.jpeg', '.jpg', '.gif', '.png', '.bmp', '.tif', '.tiff')
-
-    $LogFile = Join-Path -Path $TargetDirectory -ChildPath 'PhotoDNA Results.csv'
-
+    $datestamp = (Get-Date).ToString("s").Replace(":","-") 
+    $LogFile = Join-Path -Path $TargetDirectory -ChildPath "PhotoDNA Results$datestamp.csv"
     $ThisCheck = (Get-Date).ToUniversalTime()
 
     $LastCheck = '1900-01-01 00:00:00'
@@ -147,7 +153,7 @@ Function Get-DirectoryPhotoDNA
     Get-ChildItem -Recurse $TargetDirectory |
     ForEach-Object {
         if ($SupportedExtensions -contains $_.Extension -and ($_.LastWriteTimeUtc -ge $Then -or $PreviouslyChecked -notcontains $_.FullName)) {
-            $response = (Get-FilePhotoDNA -APIKey $APIKey -TargetFile $_.FullName)
+            $response = (Get-FilePhotoDNA -APIKey $APIKey -TargetFile $_.FullName -Uri $Uri )
             Add-Content -Path $LogFile -Value "$($ThisCheck),$($_.FullName),$($response.TrackingId),$($response.Status.Code),$($response.Status.Description),$($response.IsMatch),$($response.MatchDetails.MatchFlags.AdvancedInfo.Value),$($response.MatchDetails.MatchFlags.Source),$($response.MatchDetails.MatchFlags.Violations)";
             if($response.Status.Code -ne 3000) {
                 Write-Warning "Did not process $($_.FullName)"
